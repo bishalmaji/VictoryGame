@@ -1,4 +1,4 @@
-package com.victory.game;
+package com.victory.game.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,4 +20,15 @@ public class AppDataUtil {
         editor.putBoolean(key,value);
         return editor.commit();
     }
+    public boolean putStringData(String value, String key){
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString(key,value);
+        return editor.commit();
+    }
+
+    public String getStringData(String key){
+        return sharedPreferences.getString(key,"");
+    }
+
+
 }

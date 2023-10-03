@@ -4,86 +4,110 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Register">
+    tools:context=".fragments.Register">
 
     <EditText
-        android:id="@+id/editTextNumberSigned"
+        android:id="@+id/register_phone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
         android:width="0dp"
-        android:ems="10"
-        android:hint="Verification Code"
-        android:inputType="numberSigned"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />
-
-    <Button
-        android:id="@+id/register_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:text="Register"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
-
-    <EditText
-        android:id="@+id/editTextPhone"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:width="0dp"
+        android:background="@drawable/bg_square_box"
         android:ems="10"
         android:hint="Mobile Number"
         android:inputType="phone"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="130dp" />
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/register_otp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
         android:width="0dp"
+        android:background="@drawable/bg_square_box"
+        android:ems="10"
+        android:hint="Verification Code"
+        android:inputType="numberSigned"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_phone" />
+
+    <Button
+        android:id="@+id/register_btn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="Register"
+        app:cornerRadius="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <EditText
+        android:id="@+id/register_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:width="0dp"
+        android:background="@drawable/bg_square_box"
         android:ems="10"
         android:hint="Create Password"
         android:inputType="textPassword"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNumberSigned" />
+        app:layout_constraintTop_toBottomOf="@+id/register_otp" />
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/register_refral"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
         android:width="0dp"
+        android:background="@drawable/bg_square_box"
         android:ems="10"
         android:hint="Referal Code"
         android:inputType="text"
+        android:padding="10dp"
         android:singleLine="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/register_password" />
 
     <CheckedTextView
         android:id="@+id/checkedTextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:checked="true"
-        android:drawableStart="@drawable/baseline_search_24"
-        android:text="aggred"
+        android:drawableStart="@drawable/baseline_tick_24"
+        android:gravity="center_vertical"
+        android:text="I aggreee"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+        app:layout_constraintTop_toBottomOf="@+id/register_refral" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="32dp"
+        android:text="Terms and policies"
+        android:textColor="@color/design_default_color_primary"
         app:layout_constraintBottom_toBottomOf="@+id/checkedTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/checkedTextView"
@@ -93,11 +117,12 @@
         android:id="@+id/textView7"
         android:layout_width="0dp"
         android:layout_height="46dp"
-        android:background="@color/design_default_color_primary"
+        android:background="#673AB7"
         android:gravity="center_vertical"
         android:paddingStart="50dp"
-        android:text="TextView"
+        android:text="Register"
         android:textColor="@color/white"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -105,19 +130,25 @@
     <ImageButton
         android:id="@+id/back_register"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@android:color/transparent"
         android:padding="10dp"
-        android:src="@android:drawable/arrow_down_float"
+        android:paddingStart="18dp"
+        android:paddingEnd="8dp"
+        android:src="@drawable/baseline_arrow_back_ios_24"
         app:layout_constraintBottom_toBottomOf="@+id/textView7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView7" />
 
     <Button
-        android:id="@+id/move_login"
+        android:id="@+id/otp_btn_register"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        app:layout_constraintEnd_toStartOf="@+id/register_btn"
-        app:layout_constraintTop_toTopOf="@+id/register_btn" />
+        android:layout_height="0dp"
+        android:layout_marginEnd="4dp"
+        android:text="GET OTP"
+        app:cornerRadius="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/register_otp"
+        app:layout_constraintEnd_toEndOf="@+id/register_otp"
+        app:layout_constraintTop_toTopOf="@+id/register_otp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

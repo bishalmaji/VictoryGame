@@ -9,8 +9,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.victory.game.fragments.Login;
+import com.victory.game.fragments.Register;
+import com.victory.game.utils.AppDataUtil;
 
-public class MainActivity extends AppCompatActivity implements Register.OnMenuHiddenListener {
+public class MainActivity extends AppCompatActivity implements Register.OnMenuHiddenListener, Login.OnMenuHiddenListener{
     private BottomNavigationView bottomNavigationView;
     NavController navController;
     @Override
@@ -19,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements Register.OnMenuHi
         setContentView(R.layout.activity_main);
          bottomNavigationView=findViewById(R.id.main_bottom_nav);
 
-        bottomNavigationView.getMenu().findItem(R.id.register).setTitle("Profile");
+        bottomNavigationView.getMenu().findItem(R.id.login).setTitle("Profile");
 
 
         navController= Navigation.findNavController(this,R.id.nav_container);
@@ -31,13 +34,13 @@ public class MainActivity extends AppCompatActivity implements Register.OnMenuHi
             //navigate to profile fragment
             bottomNavigationView.getMenu().findItem(R.id.win).setVisible(false);
             bottomNavigationView.getMenu().findItem(R.id.profile).setVisible(false);
-            bottomNavigationView.getMenu().findItem(R.id.register).setVisible(true);
+            bottomNavigationView.getMenu().findItem(R.id.login).setVisible(true);
 //            //we can opt for navigate to profile
 
         }else{
             bottomNavigationView.getMenu().findItem(R.id.profile).setVisible(true);
             bottomNavigationView.getMenu().findItem(R.id.win).setVisible(true);
-            bottomNavigationView.getMenu().findItem(R.id.register).setVisible(false);
+            bottomNavigationView.getMenu().findItem(R.id.login).setVisible(false);
         }
 
         NavigationUI.setupWithNavController(bottomNavigationView,navController);
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements Register.OnMenuHi
 
     @Override
     public void registerSuccess() {
-        bottomNavigationView.getMenu().findItem(R.id.register).setVisible(false);
+        bottomNavigationView.getMenu().findItem(R.id.login).setVisible(false);
         bottomNavigationView.getMenu().findItem(R.id.profile).setVisible(true);
         bottomNavigationView.getMenu().findItem(R.id.win).setVisible(true);
         //pop out the register fragment and start home
@@ -59,4 +62,13 @@ public class MainActivity extends AppCompatActivity implements Register.OnMenuHi
     }
 
 
+    @Override
+    public void loginSuccess() {
+        bottomNavigationView.getMenu().findItem(R.id.login).setVisible(false);
+        bottomNavigationView.getMenu().findItem(R.id.profile).setVisible(true);
+        bottomNavigationView.getMenu().findItem(R.id.win).setVisible(true);
+        //pop out the register fragment and start home
+        navController.popBackStack(R.id.home,false);
+
+    }
 }
