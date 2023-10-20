@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background Color -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FF0000" /> <!-- Background color of the button -->
+        </shape>
+    </item>
+
+    <!-- Diagonal Cutout -->
+    <item android:left="0dp" android:right="0dp" android:top="0dp" android:bottom="0dp">
+        <rotate
+            android:fromDegrees="45"
+            android:pivotX="0%"
+            android:pivotY="100%">
+            <shape android:shape="rectangle">
+                <solid android:color="@android:color/transparent" /> <!-- Transparent color for the cutout -->
+            </shape>
+        </rotate>
+    </item>
+</layer-list>

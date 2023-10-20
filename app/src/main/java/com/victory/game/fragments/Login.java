@@ -8,7 +8,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,13 +26,20 @@ import android.widget.Toast;
 import com.victory.game.R;
 import com.victory.game.RetrofitClient;
 import com.victory.game.interfaces.ApiService;
-import com.victory.game.models.CommonResponseModel;
 import com.victory.game.models.LoginRequestModel;
 import com.victory.game.utils.AppDataUtil;
+import com.victory.game.utils.CurrentUserFetchWorker;
+import com.victory.game.utils.CustomProgressDialog;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,6 +59,7 @@ public class Login extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private CustomProgressDialog progressDialog;
 
     public Login() {
         // Required empty public constructor
@@ -88,11 +101,15 @@ public class Login extends Fragment {
     Button goToRegister, goToForget,login;
     ImageButton back;
     EditText phone_no, password_login;
-    AppDataUtil appDataUtil;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-         appDataUtil=new AppDataUtil(requireActivity());
+
+        // Create an instance of CustomProgressDialog
+        progressDialog = new CustomProgressDialog(getContext());
+
+
         back=view.findViewById(R.id.back_login);
         goToRegister=view.findViewById(R.id.goto_register);
         goToForget=view.findViewById(R.id.goto_forget);
@@ -109,14 +126,16 @@ public class Login extends Fragment {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                login.setEnabled(false);
                 String validationMessage = validateLoginFields();
                 if (validationMessage.equals("success")) {
-                    Toast.makeText(getContext(), "Login", Toast.LENGTH_SHORT).show();
+                    progressDialog.show();
                     // All fields are valid, proceed with the login
                     String phone = phone_no.getText().toString().trim();
                     String password = password_login.getText().toString().trim();
                     login(phone, password);
                 } else {
+
                     // Display the validation error message to the user
                     Toast.makeText(getContext(), validationMessage, Toast.LENGTH_SHORT).show();
                 }
@@ -159,12 +178,19 @@ public class Login extends Fragment {
         // All conditions are met, return success message
         return "success";
     }
-    private void postLogin() {
+    private void postLogin(boolean b) {
+        Log.e("TAG", "postLogin: came int opost login login result="+b );
         //hide the menu
+        if (b){
         if (menuHiddenListener!=null){
-
-            if(appDataUtil.putBooleanData(true,"login")){
                 menuHiddenListener.loginSuccess();
+
+        }
+        }
+        else{
+            if (menuHiddenListener!=null){
+                menuHiddenListener.loginFail();
+
             }
         }
         //post login method
@@ -184,43 +210,86 @@ public class Login extends Fragment {
             throw new ClassCastException(context.toString());
         }
     }
-    private void login(String phone, String password){
+
+    private void login(String phone, String password) {
         Executor executor = Executors.newSingleThreadExecutor();
 
-        executor.execute(()->{
-            LoginRequestModel loginRequestModel = new LoginRequestModel(phone,password);
+        executor.execute(() -> {
+            LoginRequestModel loginRequestModel = new LoginRequestModel(phone, password);
 
             ApiService apiService = RetrofitClient.getApiService();
 
-            Call<CommonResponseModel> call = apiService.login(loginRequestModel);
+            Call<ResponseBody> call = apiService.login(loginRequestModel);
 
-            call.enqueue(new Callback<CommonResponseModel>() {
+            call.enqueue(new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
-                        CommonResponseModel apiResponse = response.body();
-                        assert apiResponse != null;
-                        boolean success = apiResponse.isSuccess();
-                        String message = apiResponse.getMessage();
-                       if (appDataUtil.putStringData(message,"token")){
-                           appDataUtil.putBooleanData(true,"login");
-                           postLogin();
+                        progressDialog.hide();
+                        // Retrieve the "Authorization" header from the response
+                        String authorizationHeader = response.headers().get("Authorization");
 
-                       }
+                        if (authorizationHeader != null) {
+                            // Split the header to extract the token
+                            String[] parts = authorizationHeader.split(" ");
 
+                            if (parts.length == 2) {
+                                String token = parts[1].trim();
+                                Log.d("TAG", "token= "+token);
+                                AppDataUtil appDataUtil = AppDataUtil.getInstance(requireActivity().getApplicationContext());
+                                String encodedToken=  appDataUtil.encodeString(token);
+                                appDataUtil.setStringData(encodedToken, "token");
+//                                long expTime = getExpiryTimeFromToken(token);
+                                schedulePeriodicWork();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        postLogin(true);
+                                    }
+                                },2000);
+
+                            }
+                            Log.d("TAG", "onResponse: Auth head"+authorizationHeader);
+                        } else {
+
+                            postLogin(false);
+                            // Handle the case where the "Authorization" header is missing
+                            Log.d("TAG", "Authorization header missing in response");
+                        }
                     } else {
-                        // Handle the error response here
-                        Log.d("TAG", "onResponse1: error " + response.message());
+                        progressDialog.hide();
+                        Toast.makeText(getContext(), "Server Error Try Again", Toast.LENGTH_LONG).show();
+                        postLogin(false);
                     }
+
                 }
 
                 @Override
-                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
-
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    progressDialog.hide();
+                    Toast.makeText(getContext(), "Login Failed"+t.getMessage(), Toast.LENGTH_SHORT).show();
+                    postLogin(false);
                 }
             });
         });
     }
+
+    private void schedulePeriodicWork() {
+        long repeatInterval = 17;
+        // Schedule a periodic work
+        PeriodicWorkRequest periodicWork = new PeriodicWorkRequest.Builder(
+                CurrentUserFetchWorker.class, repeatInterval, TimeUnit.MINUTES)
+                .setInitialDelay(0, TimeUnit.MINUTES)  // Start immediately
+                .build();
+
+        WorkManager.getInstance(getContext())
+                .enqueueUniquePeriodicWork(
+                        "fetchCurrentUser",
+                        ExistingPeriodicWorkPolicy.REPLACE,  // Replace existing work if any
+                        periodicWork);
+
+    }
+
 
     @Override
     public void onDetach() {
@@ -229,5 +298,26 @@ public class Login extends Fragment {
     }
     public interface OnMenuHiddenListener {
         void loginSuccess();
+
+        void loginFail();
     }
 }
+
+
+//login data agter encode token=
+//if tokenflow
+//        if () {
+//
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.add(Calendar.MINUTE, 20); // Add 3 minutes to the current time
+//        Date expiryTime = calendar.getTime();
+//
+//        // Format the date as a string (you can use any format you prefer)
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String expiryTimeString = sdf.format(expiryTime);
+//
+//        if(appDataUtil.putStringData(expiryTimeString,"loginExpireTime")){
+//        postLogin();
+//        }
+//        }
+

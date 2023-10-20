@@ -1,5 +1,7 @@
 plugins {
     id("com.android.application")
+//    id("org.jetbrains.kotlin.android")
+
 }
 
 android {
@@ -23,8 +25,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
@@ -44,6 +46,16 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.squareup.okhttp3:okhttp:3.10.0")
+
+    implementation ("io.jsonwebtoken:jjwt-api:0.11.2")
+    implementation ("io.jsonwebtoken:jjwt-impl:0.11.2")
+    implementation ("io.jsonwebtoken:jjwt-jackson:0.11.2")
+
+    implementation ("com.razorpay:checkout:1.6.35")
+    implementation ("androidx.work:work-runtime:2.7.0")
+    implementation ("com.airbnb.android:lottie:3.4.0")
+
+
 
 
 }

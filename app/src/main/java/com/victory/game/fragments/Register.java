@@ -23,7 +23,12 @@ import com.victory.game.models.OtpRequestModel;
 import com.victory.game.models.CommonResponseModel;
 import com.victory.game.models.RegisterRequestModel;
 import com.victory.game.utils.AppDataUtil;
+import com.victory.game.utils.CustomProgressDialog;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -89,14 +94,12 @@ public class Register extends Fragment {
     }
     Button register, otp_btn;
     EditText otp_code,refral, password,mobile;
+    private CustomProgressDialog customProgressDialog;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        StrictMode.ThreadPolicy policy = new
-//                StrictMode.ThreadPolicy.Builder().permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
-        appDataUtil=new AppDataUtil(requireActivity());
+        customProgressDialog=new CustomProgressDialog(getContext());
         ImageButton back;
         register=view.findViewById(R.id.register_btn);
         otp_btn =view.findViewById(R.id.otp_btn_register);
@@ -109,12 +112,15 @@ public class Register extends Fragment {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                register.setEnabled(false);
                 String validationMessage = validateTextField();
                 if (validationMessage.equals("success")) {
                     // All fields are valid, proceed with your logic
+
                     register(mobile.getText().toString().trim(),password.getText().toString().trim()
                             ,otp_str);
                 } else {
+                    register.setEnabled(true);
                     // Display the validation error message to the user
                     Toast.makeText(getContext(), validationMessage, Toast.LENGTH_SHORT).show();
                 }
@@ -184,10 +190,7 @@ public class Register extends Fragment {
 
     private void postRegister() {
         if (menuHiddenListener!=null){
-            AppDataUtil appDataUti=new AppDataUtil(requireActivity());
-            if(appDataUti.putBooleanData(true,"login")){
                 menuHiddenListener.registerSuccess();
-            }
         }
     }
 
@@ -214,6 +217,7 @@ public class Register extends Fragment {
     }
 
     private void register(String phoneNo, String password, String otp){
+        customProgressDialog.show();
         Executor executor = Executors.newSingleThreadExecutor();
 
         executor.execute(()->{
@@ -227,30 +231,66 @@ public class Register extends Fragment {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                     if (response.isSuccessful()) {
-                        CommonResponseModel apiResponse = response.body();
-                        assert apiResponse != null;
-                        boolean success = apiResponse.isSuccess();
-                        String message = apiResponse.getMessage();
-                        //save sp
-                        if (appDataUtil.putStringData(message,"token")){
-                            appDataUtil.putBooleanData(true,"login");
-                            postRegister();
+                        customProgressDialog.hide();
 
+                        String authorizationHeader = response.headers().get("Authorization");
+
+                        if (authorizationHeader != null) {
+                            // Split the header to extract the token
+                            String[] parts = authorizationHeader.split(" ");
+
+                            if (parts.length == 2) {
+                                String token = parts[1].trim();
+                                Log.d("TAG", "token= "+token);
+
+                                String encodedToken;
+                                encodedToken=  appDataUtil.encodeString(token);
+
+                            }
+                            Log.d("TAG", "onResponse: Auth head"+authorizationHeader);
+                        } else {
+                            // Handle the case where the "Authorization" header is missing
+                            Log.d("TAG", "Authorization header missing in response");
                         }
+
+//                        CommonResponseModel apiResponse = response.body();
+//                        assert apiResponse != null;
+//                        boolean success = apiResponse.isSuccess();
+//                        String message = apiResponse.getMessage();
+//                        //save sp
+//                        if (appDataUtil.putStringData(message,"token")){
+//                            appDataUtil.putBooleanData(true,"login");
+//                            postRegister();
+//
+//                        }
                     } else {
+                        customProgressDialog.hide();
+                        try {
+                            // Handle the error response
+                            String errorMessage = response.errorBody().string();
+                            Toast.makeText(getContext(), ""+errorMessage, Toast.LENGTH_SHORT).show();
+                            // Parse the error message from the JSON response
+                            // You can use a JSON parsing library like Gson to extract the message field.
+                            // Create a custom error response model if needed.
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         // Handle the error response here
-                        Log.d("TAG", "onResponse1: error " + response.message());
+//                        Log.d("TAG", "onResponse1: error " + response.message());
                     }
+
                 }
 
                 @Override
                 public void onFailure(Call<CommonResponseModel> call, Throwable t) {
-
+                    customProgressDialog.hide();
+                    Toast.makeText(getContext(), ""+t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });
     }
     private void getOtp(String phoneNumber) {
+        customProgressDialog.show();
         Executor executor = Executors.newSingleThreadExecutor();
 
         executor.execute(() -> {
@@ -263,8 +303,9 @@ public class Register extends Fragment {
             call.enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-
+                    customProgressDialog.hide();
                     if (response.isSuccessful()) {
+
                         CommonResponseModel apiResponse = response.body();
                         boolean success = apiResponse.isSuccess();
                        otp_str = apiResponse.getMessage();
@@ -281,6 +322,7 @@ public class Register extends Fragment {
                         Log.d("TAG", "onResponse1: error " + response.message());
                     }
                     Log.d("TAG", "onResponse: "+response);
+
                 }
 
                 @Override
