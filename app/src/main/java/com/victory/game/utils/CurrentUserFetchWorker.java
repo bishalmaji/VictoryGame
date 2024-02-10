@@ -77,7 +77,6 @@ public class CurrentUserFetchWorker extends Worker {
 
                     @Override
                     public void onFailure(Call<CurrentUserResponseModel> call, Throwable t) {
-
                         appDataUtil.setBooleanData(false, "login");
                     }
                 });

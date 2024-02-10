@@ -8,15 +8,10 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="0dp"
-        android:layout_height="46dp"
-        android:background="#673AB7"
-        android:gravity="center_vertical"
-        android:paddingStart="50dp"
+        style="@style/ToolBarStyle"
         android:text="Login"
-        android:textColor="@color/white"
-        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,66 +30,66 @@
 
     <EditText
         android:id="@+id/login_phone"
+        style="@style/EditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:background="@drawable/bg_square_box"
-        android:ems="10"
-        android:hint="Mobile Number"
-        android:inputType="phone"
-        android:padding="10dp"
+        android:drawableStart="@drawable/mail"
+        android:hint="Mobile or Phone"
+        android:inputType="text|textNoSuggestions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <EditText
         android:id="@+id/login_password"
+        style="@style/EditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="32dp"
-        android:background="@drawable/bg_square_box"
-        android:ems="10"
+        android:drawableStart="@drawable/password"
         android:hint="Password"
         android:inputType="textPassword"
-        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_phone" />
 
     <Button
         android:id="@+id/goto_register"
+        style="@style/StrokeButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
         android:text="Register"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toEndOf="@+id/login_btn"
+        app:cornerRadius="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_btn" />
 
     <Button
         android:id="@+id/goto_forget"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        style="@style/StrokeButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="32dp"
         android:gravity="start|center_vertical"
         android:text="Forgot Password"
-        app:cornerRadius="0dp"
-        app:layout_constraintStart_toStartOf="@+id/login_btn"
+        app:cornerRadius="8dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/goto_register" />
 
     <Button
         android:id="@+id/login_btn"
+        style="@style/FillButtonStyle"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:text="Login"
-        app:cornerRadius="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_password" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.Win" >
+    tools:context=".fragments.Win">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -25,18 +25,32 @@
                 android:id="@+id/cl_one"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="?attr/colorContainer"
+                    app:layout_constraintBottom_toTopOf="@+id/textView12"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+                    tools:ignore="PrivateResource">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <Button
                     android:id="@+id/button7"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
                     android:backgroundTint="#F44336"
                     android:tag="7"
                     android:text="7"
-                    app:cornerRadius="2dp"
+                    app:cornerRadius="5dp"
                     app:layout_constraintEnd_toStartOf="@+id/button8"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toEndOf="@+id/button6"
@@ -44,12 +58,14 @@
 
                 <Button
                     android:id="@+id/button9"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:backgroundTint="#F44336"
                     android:tag="9"
                     android:text="9"
-                    app:cornerRadius="2dp"
+                    app:cornerRadius="5dp"
                     app:layout_constraintEnd_toStartOf="@+id/button10"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toEndOf="@+id/button8"
@@ -57,13 +73,13 @@
 
                 <Button
                     android:id="@+id/button10"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="16dp"
                     android:backgroundTint="#4CAF50"
                     android:tag="10"
                     android:text="0"
-                    app:cornerRadius="2dp"
+                    app:cornerRadius="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toEndOf="@+id/button9"
@@ -71,13 +87,13 @@
 
                 <Button
                     android:id="@+id/button5"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="16dp"
                     android:backgroundTint="#F44336"
                     android:tag="5"
                     android:text="5"
-                    app:cornerRadius="2dp"
+                    app:cornerRadius="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/button4"
                     app:layout_constraintTop_toTopOf="@+id/button4" />
@@ -86,9 +102,8 @@
                     android:id="@+id/textView8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:drawableStart="@drawable/baseline_search_24"
                     android:text="Period"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
@@ -97,7 +112,7 @@
                     android:id="@+id/textView9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="17dp"
                     android:text="Count Down"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textView8" />
@@ -106,7 +121,6 @@
                     android:id="@+id/current_game_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:layout_marginTop="4dp"
                     android:text="2024100000"
                     android:textSize="16dp"
@@ -125,14 +139,15 @@
 
                 <Button
                     android:id="@+id/join_green_btn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
                     android:backgroundTint="#4CAF50"
                     android:text="Join Green"
                     android:textSize="12sp"
-                    app:cornerRadius="2dp"
+                    app:cornerRadius="5dp"
                     app:layout_constraintEnd_toStartOf="@+id/join_violet_btn"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toStartOf="parent"
@@ -140,41 +155,42 @@
 
                 <Button
                     android:id="@+id/join_violet_btn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_marginTop="16dp"
                     android:backgroundTint="#673AB7"
                     android:text="Join Pink"
                     android:textSize="12sp"
-                    app:cornerRadius="2dp"
+                    app:cornerRadius="5dp"
                     app:layout_constraintEnd_toStartOf="@+id/join_red_btn"
                     app:layout_constraintStart_toEndOf="@+id/join_green_btn"
                     app:layout_constraintTop_toBottomOf="@+id/current_game_id" />
 
                 <Button
                     android:id="@+id/join_red_btn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="16dp"
                     android:backgroundTint="#F44336"
                     android:text="Join Red"
                     android:textSize="12sp"
-                    app:cornerRadius="2dp"
+                    app:cornerRadius="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/join_violet_btn"
                     app:layout_constraintTop_toBottomOf="@+id/current_game_id" />
 
                 <Button
                     android:id="@+id/button1"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:backgroundTint="#F44336"
                     android:tag="1"
                     android:text="1"
-                    app:cornerRadius="2dp"
+                    app:cornerRadius="5dp"
                     app:layout_constraintEnd_toStartOf="@+id/button2"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toStartOf="parent"
@@ -182,15 +198,15 @@
 
                 <Button
                     android:id="@+id/button6"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
                     android:backgroundTint="#4CAF50"
                     android:tag="6"
-                    android:text="6"
 
-                    app:cornerRadius="2dp"
+                    android:text="6"
+                    app:cornerRadius="5dp"
                     app:layout_constraintBottom_toTopOf="@+id/textView12"
                     app:layout_constraintEnd_toStartOf="@+id/button7"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -200,12 +216,13 @@
 
                 <Button
                     android:id="@+id/button8"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
                     android:backgroundTint="#4CAF50"
                     android:tag="8"
                     android:text="8"
-                    app:cornerRadius="2dp"
+                    app:cornerRadius="5dp"
                     app:layout_constraintEnd_toStartOf="@+id/button9"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toEndOf="@+id/button7"
@@ -213,45 +230,51 @@
 
                 <Button
                     android:id="@+id/button4"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:backgroundTint="#4CAF50"
                     android:tag="4"
                     android:text="4"
-                    app:cornerRadius="2dp"
+                    app:cornerRadius="5dp"
                     app:layout_constraintEnd_toStartOf="@+id/button5"
                     app:layout_constraintStart_toEndOf="@+id/button3"
                     app:layout_constraintTop_toTopOf="@+id/button3" />
 
                 <Button
                     android:id="@+id/button3"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
                     android:backgroundTint="#F44336"
                     android:tag="3"
                     android:text="3"
-                    app:cornerRadius="2dp"
+                    app:cornerRadius="5dp"
                     app:layout_constraintEnd_toStartOf="@+id/button4"
                     app:layout_constraintStart_toEndOf="@+id/button2"
                     app:layout_constraintTop_toTopOf="@+id/button2" />
 
                 <Button
                     android:id="@+id/button2"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
                     android:backgroundTint="#4CAF50"
                     android:tag="2"
                     android:text="2"
-                    app:cornerRadius="2dp"
+                    app:cornerRadius="5dp"
                     app:layout_constraintEnd_toStartOf="@+id/button3"
                     app:layout_constraintStart_toEndOf="@+id/button1"
                     app:layout_constraintTop_toTopOf="@+id/button1" />
 
                 <TextView
                     android:id="@+id/textView12"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:padding="10dp"
                     android:text="Party Record"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -262,7 +285,9 @@
                     android:id="@+id/constraintLayout2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="1dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -271,8 +296,8 @@
                         android:id="@+id/win_main_recharge_btn"
                         android:layout_width="120dp"
                         android:layout_height="40dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="1dp"
+                        android:layout_marginTop="16dp"
                         android:layout_marginBottom="8dp"
                         android:text="Recharge"
                         app:cornerRadius="2dp"
@@ -295,9 +320,7 @@
                         android:id="@+id/win_aval_blnc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
-                        android:padding="8dp"
                         android:text="Available Balance: 0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -307,30 +330,27 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:src="@tools:sample/backgrounds/scenic" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_two"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_margin="5dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cl_one">
+                app:layout_constraintTop_toBottomOf="@+id/divider14">
 
                 <TextView
                     android:id="@+id/textView14"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:padding="5dp"
+                    android:padding="10dp"
                     android:text="Result"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -342,7 +362,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:padding="5dp"
+                    android:padding="10dp"
                     android:text="Game No"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/textView10"
@@ -354,7 +374,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:padding="5dp"
+                    android:padding="10dp"
                     android:text="Price"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/textView11"
@@ -366,19 +386,19 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:padding="5dp"
+                    android:padding="10dp"
                     android:text="Number"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/textView14"
                     app:layout_constraintStart_toEndOf="@+id/textView10"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_height="350dp"
 
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -388,8 +408,11 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/game_result_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
                     android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -418,21 +441,72 @@
 
             <TextView
                 android:id="@+id/textView15"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
+                android:padding="10dp"
                 android:text="My Party record"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/divider16" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/record_recycler"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="350dp"
+                app:layout_constraintBottom_toTopOf="@+id/divider17"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider15">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/record_recycler"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/divider14"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:background="@drawable/gradient_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cl_one" />
+
+            <View
+                android:id="@+id/divider15"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:background="@drawable/gradient_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
+            <View
+                android:id="@+id/divider16"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:background="?attr/colorContainer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+                tools:ignore="PrivateResource" />
+
+            <View
+                android:id="@+id/divider17"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:background="?attr/colorContainer"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="PrivateResource" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

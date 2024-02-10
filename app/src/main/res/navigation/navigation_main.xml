@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_profile_to_resetPassword"
             app:destination="@id/resetPassword" />
+        <action
+            android:id="@+id/action_profile_to_login"
+            app:destination="@id/login" />
     </fragment>
     <fragment
         android:id="@+id/search"

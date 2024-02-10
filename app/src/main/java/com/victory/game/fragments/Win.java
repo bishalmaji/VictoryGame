@@ -58,28 +58,28 @@ import retrofit2.Response;
 public class Win extends Fragment {
 
 
-    private int colorValue=100;
+    private int colorValue = 100;
     private CountDownTimer countdownTimer;
-    private TextView timer,current_game_id;
+    private TextView timer, current_game_id;
     private long timeDifference;
-    private GameWinAdapter adapter;
-    private String u_decodedToken,u_id;
-    private int u_amount=0;
-//    private boolean isPlayedColor=false;
+    //    private GameWinAdapter adapter;
+    private String u_decodedToken, u_id;
+    private int u_amount = 0;
+    //    private boolean isPlayedColor=false;
 //    private boolean isPlayedNumber=false;
 //    private int redValue=0,greenValue=0,pinkValue=0, oneV=0,twoV=0,threeV=0,fourV=0,fiveV=0,sixV=0,sevenV=0,eightV=0
 //            ,nineV=0,tenV=0;
     private RecordWinAdapter recordAdapter;
     private TextView winAvlBlnc;
-    private Button winMainRechargeBtn,winReadRules;
+    private Button winMainRechargeBtn, winReadRules;
     private ImageView winRetry;
-    private ImageView gameRprev,gameRnext;
+    private ImageView gameRprev, gameRnext;
+    private GameWinAdapter adapter;
 
 
     public Win() {
         // Required empty public constructor
     }
-
 
 
     @Override
@@ -88,9 +88,10 @@ public class Win extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_win, container, false);
     }
+
     private Button join_green, join_red, join_pink;
-    private Button one, two, three, four, five,six, seven, eight,nine,ten;
-    private RecyclerView gameResultRecycler,recordRecycler;
+    private Button one, two, three, four, five, six, seven, eight, nine, ten;
+    private RecyclerView gameResultRecycler, recordRecycler;
 
     private ConstraintLayout gameLayout;
     private CustomProgressDialog customProgressDialog;
@@ -98,59 +99,53 @@ public class Win extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        customProgressDialog=new CustomProgressDialog(getContext());
-        if(isLoggedIn()){
-            appDataUtil=AppDataUtil.getInstance(requireActivity().getApplicationContext());
-            resetGlobalValues();
-            String encodedToken = appDataUtil.getStringData("token").trim();
-            u_decodedToken = appDataUtil.decodeString(encodedToken);
-            u_id= appDataUtil.getStringData("user_uid");
-            u_amount=  appDataUtil.getIntData("user_amount");
-        }else{
-            if (changeMainViewListener!=null){
-                changeMainViewListener.gotoLoginWin();
-                return;
-            }
-        }
+        customProgressDialog = new CustomProgressDialog(getContext());
+
+        appDataUtil = AppDataUtil.getInstance(requireActivity().getApplicationContext());
+        resetGlobalValues();
+        String encodedToken = appDataUtil.getStringData("token").trim();
+        u_decodedToken = appDataUtil.decodeString(encodedToken);
+        u_id = appDataUtil.getStringData("user_uid");
+        u_amount = appDataUtil.getIntData("user_amount");
+
 
         join_pink = view.findViewById(R.id.join_violet_btn);
         join_green = view.findViewById(R.id.join_green_btn);
         join_red = view.findViewById(R.id.join_red_btn);
         timer = view.findViewById(R.id.win_timer);
-        current_game_id=view.findViewById(R.id.current_game_id);
+        current_game_id = view.findViewById(R.id.current_game_id);
 
         one = view.findViewById(R.id.button1);
         two = view.findViewById(R.id.button2);
         three = view.findViewById(R.id.button3);
-         four= view.findViewById(R.id.button4);
-        five= view.findViewById(R.id.button5);
+        four = view.findViewById(R.id.button4);
+        five = view.findViewById(R.id.button5);
         six = view.findViewById(R.id.button6);
         seven = view.findViewById(R.id.button7);
         eight = view.findViewById(R.id.button8);
-         nine = view.findViewById(R.id.button9);
+        nine = view.findViewById(R.id.button9);
         ten = view.findViewById(R.id.button10);
-        
-        winAvlBlnc=view.findViewById(R.id.win_aval_blnc);
-        winMainRechargeBtn=view.findViewById(R.id.win_main_recharge_btn);
-        winRetry=view.findViewById(R.id.win_retry);
-        winReadRules=view.findViewById(R.id.win_read_rules);
+
+        winAvlBlnc = view.findViewById(R.id.win_aval_blnc);
+        winMainRechargeBtn = view.findViewById(R.id.win_main_recharge_btn);
+        winRetry = view.findViewById(R.id.win_retry);
+        winReadRules = view.findViewById(R.id.win_read_rules);
 
 
-
-        gameLayout=view.findViewById(R.id.cl_one);
+        gameLayout = view.findViewById(R.id.cl_one);
         gameResultRecycler = view.findViewById(R.id.game_result_recycler);
-        recordRecycler=view.findViewById(R.id.record_recycler);
+        recordRecycler = view.findViewById(R.id.record_recycler);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext()) {
             @Override
             public boolean canScrollVertically() {
                 return false;
             }
         };
-        winAvlBlnc.setText("Available Balance: ₹"+u_amount);
+        winAvlBlnc.setText("Available Balance: ₹" + u_amount);
         winMainRechargeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(requireActivity(), Recharge.class);
+                Intent intent = new Intent(requireActivity(), Recharge.class);
                 startActivity(intent);
             }
         });
@@ -248,23 +243,23 @@ public class Win extends Fragment {
 
         gameResultRecycler.setLayoutManager(linearLayoutManager);
 
-        recordRecycler.setLayoutManager(linearLayoutManager);
+        recordRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        recordAdapter=new RecordWinAdapter(new ArrayList<>(),getContext());
+        recordAdapter = new RecordWinAdapter(new ArrayList<>(), getContext());
         recordRecycler.setAdapter(recordAdapter);
 
-        adapter = new GameWinAdapter(getContext(), new ArrayList<>());
+//        adapter = new GameWinAdapter(getContext(), new ArrayList<>());
 
         gameResultRecycler.setHasFixedSize(true);
 
         // Initialize with an empty list
-        gameResultRecycler.setAdapter(adapter);
+//        gameResultRecycler.setAdapter(adapter);
 
-            getResults();
-            fetchTimeFromAPI();
+        getResults();
+        fetchTimeFromAPI();
         getRecord();
-         gameRnext = view.findViewById(R.id.next_button);
-         gameRprev=view.findViewById(R.id.previous_button);
+        gameRnext = view.findViewById(R.id.next_button);
+        gameRprev = view.findViewById(R.id.previous_button);
         gameRnext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -279,8 +274,8 @@ public class Win extends Fragment {
         });
 
 
-
     }
+
     // Define the click handler function
     private void handleButtonClick(String buttonTag) {
         switch (buttonTag) {
@@ -344,16 +339,16 @@ public class Win extends Fragment {
                 // Format minutes and seconds as a string (e.g., "02:30")
                 String time = String.format(Locale.ENGLISH, "%02d:%02d", minutes, seconds);
 
-                if(minutes==0 && seconds<=30){
+                if (minutes == 0 && seconds <= 30) {
                     //make every btn disable
                     disableButtons();
 
-                   if(seconds==0){
-                       //get the winner color
+                    if (seconds == 0) {
+                        //get the winner color
                        getResults();
-                       fetchTimeFromAPI();
-                   }
-                }else{
+                        fetchTimeFromAPI();
+                    }
+                } else {
                     enableButtons();
                 }
                 // Update the TextView with the remaining time
@@ -368,14 +363,14 @@ public class Win extends Fragment {
 
             }
         };
-     countdownTimer.start();
+        countdownTimer.start();
     }
 
     private void disableButtons() {
-     join_green.setEnabled(false);
-     join_pink.setEnabled(false);
-     join_red.setEnabled(false);
-     one.setEnabled(false);
+        join_green.setEnabled(false);
+        join_pink.setEnabled(false);
+        join_red.setEnabled(false);
+        one.setEnabled(false);
         two.setEnabled(false);
         three.setEnabled(false);
         four.setEnabled(false);
@@ -387,6 +382,7 @@ public class Win extends Fragment {
         ten.setEnabled(false);
 
     }
+
     private void enableButtons() {
         join_green.setEnabled(true);
         join_pink.setEnabled(true);
@@ -407,258 +403,245 @@ public class Win extends Fragment {
     AppDataUtil appDataUtil;
 
 
-
-
     private void getResults() {
-        Log.e("TAG", "getResults: " );
-        if(isLoggedIn()){
-            Log.e("TAG", "logged in: " );
-            customProgressDialog.show();
-            Executor executor = Executors.newSingleThreadExecutor();
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
+        Log.e("TAG", "getResults: ");
+       
+        Log.e("TAG", "logged in: ");
+        customProgressDialog.show();
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
 
-                    ApiService gameApiService = RetrofitClientWithToken.getApiService(u_decodedToken);
+                ApiService gameApiService = RetrofitClientWithToken.getApiService(u_decodedToken);
 
-                    Call<GameResultResponseModel> call = gameApiService.getColorResult();
+                Call<GameResultResponseModel> call = gameApiService.getColorResult();
 
-                    call.enqueue(new Callback<GameResultResponseModel>() {
-                        @Override
-                        public void onResponse(Call<GameResultResponseModel> call, Response<GameResultResponseModel> response) {
-                            if (response.isSuccessful()) {
-                                // Check if the response indicates success
-                                GameResultResponseModel resultModels = response.body();
-                                if (resultModels != null && resultModels.isSuccess()) {
-                                    List<ResultModel> gameResult = resultModels.getData();
-                                    if (gameResult != null && !gameResult.isEmpty()) {
-                                        Collections.reverse(gameResult);
-                                        Log.d("TAG", "onResponse: "+gameResult.get(0));
-                                        adapter = new GameWinAdapter(getContext(), gameResult);
-                                        gameResultRecycler.setAdapter(adapter);
-                                        if( gameRprev.getVisibility()!=View.VISIBLE){
-                                            gameRprev.setVisibility(View.VISIBLE);
-                                            gameRprev.setVisibility(View.VISIBLE);
+                call.enqueue(new Callback<GameResultResponseModel>() {
+                    @Override
+                    public void onResponse(Call<GameResultResponseModel> call, Response<GameResultResponseModel> response) {
+                        if (response.isSuccessful()) {
+                            // Check if the response indicates success
+                            GameResultResponseModel resultModels = response.body();
+                            if (resultModels != null && resultModels.isSuccess()) {
+                                List<ResultModel> gameResult = resultModels.getData();
+                                if (gameResult != null && !gameResult.isEmpty()) {
+                                    Collections.reverse(gameResult);
+                                    Log.d("TAG", "onResponse: " + gameResult.get(0));
+                                    adapter = new GameWinAdapter(getContext(), gameResult);
+                                    gameResultRecycler.setAdapter(adapter);
+                                    if (gameRprev.getVisibility() != View.VISIBLE) {
+                                        gameRprev.setVisibility(View.VISIBLE);
+                                        gameRprev.setVisibility(View.VISIBLE);
+                                    }
+
+                                    customProgressDialog.hide();
+
+                                    boolean isPlayedNumber = appDataUtil.getBooleanData("PLAY_NUMBER");
+                                    boolean isPlayedColor = appDataUtil.getBooleanData("PLAY_COLOR");
+                                    int initial_amount = appDataUtil.getIntData("INIT_AMOUNT");
+                                    int userWalet = appDataUtil.getIntData("user_amount");
+                                    int expence = initial_amount - userWalet;
+
+                                    Log.d("game result", "total bet= " + expence);
+                                    //update the user according to the win factor
+                                    if (isPlayedNumber || isPlayedColor) {
+                                        // Retrieve and update variables using SharedPreferences
+                                        int oneV = appDataUtil.getIntData("one");
+                                        int twoV = appDataUtil.getIntData("two");
+                                        int threeV = appDataUtil.getIntData("three");
+                                        int fourV = appDataUtil.getIntData("four");
+                                        int fiveV = appDataUtil.getIntData("five");
+                                        int sixV = appDataUtil.getIntData("six");
+                                        int sevenV = appDataUtil.getIntData("seven");
+                                        int eightV = appDataUtil.getIntData("eight");
+                                        int nineV = appDataUtil.getIntData("nine");
+                                        int tenV = appDataUtil.getIntData("ten");
+
+                                        int redValue = appDataUtil.getIntData("red");
+                                        int greenValue = appDataUtil.getIntData("green");
+                                        int pinkValue = appDataUtil.getIntData("pink");
+
+                                        Log.e("record add test", "onResponse: is played");
+                                        ResultModel latestResult = gameResult.get(0);//last result(latest)
+                                        List<String> latestWinColor = latestResult.getWinColor();
+                                        String latestWinShowId = latestResult.getWinShowId();
+                                        String latestWinPrice = latestResult.getWinPrice();
+                                        String latestWinNumber = latestResult.getWinNumber();
+                                        int latWN = Integer.parseInt(latestWinNumber);
+
+                                        int numberWinAmount = 0;
+                                        if (isPlayedNumber) {
+                                            Log.e("record add test", "onResponse: is played nunber");
+
+                                            if (latWN == 1 && oneV > 0) {
+                                                numberWinAmount = oneV * 9;
+                                                double deduction = 0.05 * numberWinAmount;
+                                                numberWinAmount -= deduction;
+                                            } else if (latWN == 2 && twoV > 0) {
+                                                numberWinAmount = twoV * 9;
+                                                double deduction = 0.05 * numberWinAmount;
+                                                numberWinAmount -= deduction;
+                                            } else if (latWN == 3 && threeV > 0) {
+                                                numberWinAmount = threeV * 9;
+                                                double deduction = 0.05 * numberWinAmount;
+                                                numberWinAmount -= deduction;
+                                            } else if (latWN == 4 && fourV > 0) {
+                                                numberWinAmount = fourV * 9;
+                                                double deduction = 0.05 * numberWinAmount;
+                                                numberWinAmount -= deduction;
+                                            } else if (latWN == 5 && fiveV > 0) {
+                                                numberWinAmount = fiveV * 9;
+                                                double deduction = 0.05 * numberWinAmount;
+                                                numberWinAmount -= deduction;
+                                            } else if (latWN == 6 && sixV > 0) {
+                                                numberWinAmount = sixV * 9;
+                                                double deduction = 0.05 * numberWinAmount;
+                                                numberWinAmount -= deduction;
+                                            } else if (latWN == 7 && sevenV > 0) {
+                                                numberWinAmount = sevenV * 9;
+                                                double deduction = 0.05 * numberWinAmount;
+                                                numberWinAmount -= deduction;
+                                            } else if (latWN == 8 && eightV > 0) {
+                                                numberWinAmount = eightV * 9;
+                                                double deduction = 0.05 * numberWinAmount;
+                                                numberWinAmount -= deduction;
+                                            } else if (latWN == 9 && nineV > 0) {
+                                                numberWinAmount = nineV * 9;
+                                                double deduction = 0.05 * numberWinAmount;
+                                                numberWinAmount -= deduction;
+                                            } else if (latWN == 10 && tenV > 0) {
+                                                numberWinAmount = tenV * 9;
+                                                double deduction = 0.05 * numberWinAmount;
+                                                numberWinAmount -= deduction;
+                                            }
+
+                                        }
+                                        int winAmount = 0;
+                                        if (latestWinColor.size() == 1) {
+                                            Log.e("record add test", "sizw colr=1 and red val green val=" + redValue + "grn=" + greenValue);
+                                            String winColor = latestWinColor.get(0);
+                                            if (winColor.equals("red") && redValue > 0) {
+                                                Log.e("record add test", "reg val>0");
+                                                //update the user walet
+                                                winAmount = (redValue * 2);
+                                                // Calculate 5% of winAmount
+                                                double deduction = 0.05 * winAmount;
+                                                winAmount -= deduction;
+
+                                            }
+                                            if (winColor.equals("green") && greenValue > 0) {
+                                                Log.e("record add test", "green val>0");
+                                                //update the user walet
+                                                winAmount = (greenValue * 2);
+                                                // Calculate 5% of winAmount
+                                                double deduction = 0.05 * winAmount;
+                                                winAmount -= deduction;
+
+                                            }
+
+                                        } else if (latestWinColor.size() == 2) {
+                                            Log.e("record add test", "color size=2");
+                                            String winColor = latestWinColor.get(0);
+                                            if (pinkValue > 0) {
+                                                Log.e("record add test", "pink val>0");
+                                                //5x
+                                                winAmount = winAmount + pinkValue * 5;
+                                                double deduction = 0.05 * winAmount;
+                                                winAmount -= deduction;
+                                                if (winColor.equals("red") && redValue > 0) {
+                                                    //update the user walet
+                                                    double fortyFivePercent = 0.45 * redValue;
+                                                    winAmount += fortyFivePercent;
+                                                    double ded = 0.05 * winAmount;
+                                                    winAmount -= ded;
+                                                }
+                                                if (winColor.equals("green") && greenValue > 0) {
+                                                    double fortyFivePercent = 0.45 * greenValue;
+                                                    winAmount += fortyFivePercent;
+                                                    double ded = 0.05 * winAmount;
+                                                    winAmount -= ded;
+                                                }
+                                            } else {
+                                                //45%
+                                                if (winColor.equals("red") && redValue > 0) {
+                                                    //update the user walet
+                                                    double fortyFivePercent = 0.45 * redValue;
+                                                    winAmount += fortyFivePercent;
+                                                    double deduction = 0.05 * winAmount;
+                                                    winAmount -= deduction;
+                                                }
+                                                if (winColor.equals("green") && greenValue > 0) {
+                                                    double fortyFivePercent = 0.45 * greenValue;
+                                                    winAmount += fortyFivePercent;
+                                                    double deduction = 0.05 * winAmount;
+                                                    winAmount -= deduction;
+                                                }
+                                            }
                                         }
 
-                                        customProgressDialog.hide();
+                                        int totalWon = winAmount + numberWinAmount;
 
-                                        boolean isPlayedNumber= appDataUtil.getBooleanData("PLAY_NUMBER");
-                                        boolean isPlayedColor= appDataUtil.getBooleanData("PLAY_COLOR");
-                                        int initial_amount=appDataUtil.getIntData("INIT_AMOUNT");
-                                        int userWalet=appDataUtil.getIntData("user_amount");
-                                        int expence=initial_amount-userWalet;
+                                        if (totalWon > expence) {
+                                            runAddRecord(totalWon, latestWinShowId, true, latestWinNumber, latestWinColor, String.valueOf(expence), u_id);
+                                        } else {
+                                            if (numberWinAmount > 0 && winAmount <= 0) {
+                                                runAddRecord(numberWinAmount, latestWinShowId, true, latestWinNumber, latestWinColor, String.valueOf(expence), u_id);
+                                            } else if (numberWinAmount <= 0 && winAmount > 0) {
+                                                runAddRecord(winAmount, latestWinShowId, true, latestWinNumber, latestWinColor, String.valueOf(expence), u_id);
+                                            } else {
+                                                runAddRecord(expence, latestWinShowId, false, latestWinNumber, latestWinColor, String.valueOf(expence), u_id);
+                                            }
 
-                                        Log.d("game result", "total bet= "+expence);
-                                        //update the user according to the win factor
-                                        if(isPlayedNumber||isPlayedColor){
-                                            // Retrieve and update variables using SharedPreferences
-                                            int oneV = appDataUtil.getIntData("one");
-                                            int twoV = appDataUtil.getIntData("two");
-                                            int threeV = appDataUtil.getIntData("three");
-                                            int fourV = appDataUtil.getIntData("four");
-                                            int fiveV = appDataUtil.getIntData("five");
-                                            int sixV = appDataUtil.getIntData("six");
-                                            int sevenV = appDataUtil.getIntData("seven");
-                                            int eightV = appDataUtil.getIntData("eight");
-                                            int nineV =appDataUtil.getIntData("nine");
-                                            int tenV =appDataUtil.getIntData("ten");
+                                        }
 
-                                            int redValue = appDataUtil.getIntData("red");
-                                            int greenValue = appDataUtil.getIntData("green");
-                                            int pinkValue = appDataUtil.getIntData("pink");
-
-                                            Log.e("record add test", "onResponse: is played");
-                                            ResultModel latestResult = gameResult.get(0);//last result(latest)
-                                            List<String> latestWinColor = latestResult.getWinColor();
-                                            String latestWinShowId = latestResult.getWinShowId();
-                                            String latestWinPrice = latestResult.getWinPrice();
-                                            String latestWinNumber = latestResult.getWinNumber();
-                                            int latWN=Integer.parseInt(latestWinNumber);
-
-                                            int numberWinAmount=0;
-                                            if(isPlayedNumber){
-                                                 Log.e("record add test", "onResponse: is played nunber");
-
-                                                 if(latWN==1&& oneV>0){
-                                                     numberWinAmount=oneV*9;
-                                                     double deduction = 0.05 * numberWinAmount;
-                                                     numberWinAmount -= deduction;
-                                                 }else if(latWN==2&& twoV>0){
-                                                     numberWinAmount=twoV*9;
-                                                     double deduction = 0.05 * numberWinAmount;
-                                                     numberWinAmount -= deduction;
-                                                 }
-                                                 else if(latWN==3&& threeV>0){
-                                                     numberWinAmount=threeV*9;
-                                                     double deduction = 0.05 * numberWinAmount;
-                                                     numberWinAmount -= deduction;
-                                                 }
-                                                 else if(latWN==4&& fourV>0){
-                                                     numberWinAmount=fourV*9;
-                                                     double deduction = 0.05 * numberWinAmount;
-                                                     numberWinAmount -= deduction;
-                                                 }
-                                                 else if(latWN==5&& fiveV>0){
-                                                     numberWinAmount=fiveV*9;
-                                                     double deduction = 0.05 * numberWinAmount;
-                                                     numberWinAmount -= deduction;
-                                                 }
-                                                 else if(latWN==6&& sixV>0){
-                                                     numberWinAmount=sixV*9;
-                                                     double deduction = 0.05 * numberWinAmount;
-                                                     numberWinAmount -= deduction;
-                                                 }
-                                                 else if(latWN==7&& sevenV>0){
-                                                     numberWinAmount=sevenV*9;
-                                                     double deduction = 0.05 * numberWinAmount;
-                                                     numberWinAmount -= deduction;
-                                                 }else if(latWN==8&& eightV>0){
-                                                     numberWinAmount=eightV*9;
-                                                     double deduction = 0.05 * numberWinAmount;
-                                                     numberWinAmount -= deduction;
-                                                 }else if(latWN==9&& nineV>0){
-                                                     numberWinAmount=nineV*9;
-                                                     double deduction = 0.05 * numberWinAmount;
-                                                     numberWinAmount -= deduction;
-                                                 }else if(latWN==10&& tenV>0){
-                                                     numberWinAmount=tenV*9;
-                                                     double deduction = 0.05 * numberWinAmount;
-                                                     numberWinAmount -= deduction;
-                                                 }
-
-                                             }
-                                            int winAmount=0;
-                                                if(latestWinColor.size()==1){
-                                                    Log.e("record add test", "sizw colr=1 and red val green val="+redValue+"grn="+greenValue);
-                                                    String winColor=latestWinColor.get(0);
-                                                    if(winColor.equals("red") && redValue>0){
-                                                        Log.e("record add test", "reg val>0");
-                                                        //update the user walet
-                                                         winAmount=(redValue*2);
-                                                        // Calculate 5% of winAmount
-                                                        double deduction = 0.05 * winAmount;
-                                                        winAmount -= deduction;
-
-                                                    }
-                                                    if (winColor.equals("green") && greenValue>0){
-                                                        Log.e("record add test", "green val>0");
-                                                        //update the user walet
-                                                         winAmount=(greenValue*2);
-                                                        // Calculate 5% of winAmount
-                                                        double deduction = 0.05 * winAmount;
-                                                        winAmount -= deduction;
-
-                                                    }
-
-                                                }
-                                                else if(latestWinColor.size()==2){
-                                                    Log.e("record add test", "color size=2");
-                                                    String winColor=latestWinColor.get(0);
-                                                    if(pinkValue>0){
-                                                        Log.e("record add test", "pink val>0");
-                                                        //5x
-                                                        winAmount=winAmount+pinkValue*5;
-                                                        double deduction = 0.05 * winAmount;
-                                                        winAmount-=deduction;
-                                                        if (winColor.equals("red") && redValue > 0) {
-                                                            //update the user walet
-                                                            double fortyFivePercent = 0.45 * redValue;
-                                                            winAmount+=fortyFivePercent;
-                                                            double ded = 0.05 * winAmount;
-                                                            winAmount-=ded;
-                                                        }
-                                                        if (winColor.equals("green") && greenValue > 0) {
-                                                            double fortyFivePercent = 0.45 * greenValue;
-                                                            winAmount+=fortyFivePercent;
-                                                            double ded = 0.05 * winAmount;
-                                                            winAmount-=ded;
-                                                        }
-                                                    }else {
-                                                        //45%
-                                                        if (winColor.equals("red") && redValue > 0) {
-                                                            //update the user walet
-                                                            double fortyFivePercent = 0.45 * redValue;
-                                                            winAmount+=fortyFivePercent;
-                                                            double deduction = 0.05 * winAmount;
-                                                            winAmount-=deduction;
-                                                        }
-                                                        if (winColor.equals("green") && greenValue > 0) {
-                                                            double fortyFivePercent = 0.45 * greenValue;
-                                                            winAmount+=fortyFivePercent;
-                                                            double deduction = 0.05 * winAmount;
-                                                            winAmount-=deduction;
-                                                        }
-                                                    }
-                                                }
-
-                                                int totalWon=winAmount+numberWinAmount;
-
-                                                if(totalWon>expence){
-                                                    runAddRecord(totalWon,latestWinShowId, true,latestWinNumber,latestWinColor,String.valueOf(expence),u_id);
-                                                }else{
-                                                    if(numberWinAmount>0 && winAmount<=0){
-                                                        runAddRecord(numberWinAmount,latestWinShowId, true,latestWinNumber,latestWinColor,String.valueOf(expence),u_id);
-                                                    }else if(numberWinAmount<=0 && winAmount>0){
-                                                        runAddRecord(winAmount,latestWinShowId, true,latestWinNumber,latestWinColor,String.valueOf(expence),u_id);
-                                                    }else{
-                                                        runAddRecord(expence,latestWinShowId, false,latestWinNumber,latestWinColor,String.valueOf(expence),u_id);
-                                                    }
-
-                                                }
-
-                                                //here deceide win or loss
-                                            Log.e("record", "end of is played now reset value");
+                                        //here deceide win or loss
+                                        Log.e("record", "end of is played now reset value");
 //                                            AddToUserWalet(winAmount+numberWinAmount,latestWinShowId,latestWinNumber,latestWinColor,String.valueOf(totalBet));
 
-                                          }//user played number or colour
-                                    }
-                                } else {
-                                    // Handle API response indicating failure
-                                    Log.d("TAG", "API response indicates failure.");
-                                    if (changeMainViewListener!=null){
-                                        changeMainViewListener.gotoLoginWin();
-                                    }
+                                    }//user played number or colour
                                 }
-
                             } else {
-                                customProgressDialog.hide();
-                                if (changeMainViewListener!=null){
+                                // Handle API response indicating failure
+                                Log.d("TAG", "API response indicates failure.");
+                                if (changeMainViewListener != null) {
                                     changeMainViewListener.gotoLoginWin();
                                 }
                             }
-                        }
 
-
-
-                        @Override
-                        public void onFailure(Call<GameResultResponseModel> call, Throwable t) {
-                            // Handle failure (e.g., network issues)
-
+                        } else {
                             customProgressDialog.hide();
-                            if (changeMainViewListener!=null){
+                            if (changeMainViewListener != null) {
                                 changeMainViewListener.gotoLoginWin();
-                                return;
                             }
                         }
-                    });
+                    }
 
-                }
-            });
-        }else{
-            if(changeMainViewListener!=null){
-                changeMainViewListener.gotoLoginWin();
+
+                    @Override
+                    public void onFailure(Call<GameResultResponseModel> call, Throwable t) {
+                        // Handle failure (e.g., network issues)
+
+                        customProgressDialog.hide();
+                        if (changeMainViewListener != null) {
+                            changeMainViewListener.gotoLoginWin();
+                        }
+                    }
+                });
+
             }
-        }
+        });
+
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
-        if(isLoggedIn()){
-            AppDataUtil appDataUtil=AppDataUtil.getInstance(requireActivity().getApplicationContext());
-            int updated_amount=  appDataUtil.getIntData("user_amount");
-            winAvlBlnc.setText("Available balance: ₹"+updated_amount);
+        if (isLoggedIn()) {
+            AppDataUtil appDataUtil = AppDataUtil.getInstance(requireActivity().getApplicationContext());
+            int updated_amount = appDataUtil.getIntData("user_amount");
+            winAvlBlnc.setText("Available balance: ₹" + updated_amount);
         }
     }
 
@@ -693,7 +676,8 @@ public class Win extends Fragment {
             countdownTimer.cancel();
         }
     }
-    private void  fetchTimeFromAPI() {
+
+    private void fetchTimeFromAPI() {
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(new Runnable() {
             @Override
@@ -704,7 +688,7 @@ public class Win extends Fragment {
                 call.enqueue(new Callback<CommonResponseModel>() {
                     @Override
                     public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                        Log.e("TAG", "onResponse: "+response.toString() );
+                        Log.e("TAG", "onResponse: " + response.toString());
                         if (response.isSuccessful()) {
                             CommonResponseModel securityResponse = response.body();
                             if (securityResponse != null) {
@@ -719,9 +703,9 @@ public class Win extends Fragment {
 
                                     SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy, hh:mm:ss a", Locale.ENGLISH);
                                     dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); // Set to Indian Standard Time (IST)
-                                    Log.e("TAG", "fetchTimeFromAPI: time key========"+gamePlayKey);
+                                    Log.e("TAG", "fetchTimeFromAPI: time key========" + gamePlayKey);
 
-                                        current_game_id.setText(gamePlayKey);
+                                    current_game_id.setText(gamePlayKey);
 
                                     try {
                                         Date apiDate = dateFormat.parse(apiTime);
@@ -753,9 +737,10 @@ public class Win extends Fragment {
 
                         ;
                     }
+
                     @Override
                     public void onFailure(Call<CommonResponseModel> call, Throwable t) {
-                        Log.d("TAG", "onFailure: "+t.getMessage());
+                        Log.d("TAG", "onFailure: " + t.getMessage());
                     }
                 });
             }
@@ -765,65 +750,64 @@ public class Win extends Fragment {
     }
 
     public boolean isLoggedIn() {
-         appDataUtil= AppDataUtil.getInstance(requireActivity().getApplicationContext());
+        appDataUtil = AppDataUtil.getInstance(requireActivity().getApplicationContext());
         return appDataUtil.isLoggedIn();
     }
 
     public void updateColorValue(String colorName, int colorValue) {
-            if(isLoggedIn()){
-                customProgressDialog.show();
-                Executor executor = Executors.newSingleThreadExecutor();
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
+        if (isLoggedIn()) {
+            customProgressDialog.show();
+            Executor executor = Executors.newSingleThreadExecutor();
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
 
-                        ColorUpdateRequest updateRequest = new ColorUpdateRequest(colorName, colorValue);
-                        ApiService apiService = RetrofitClientWithToken.getApiService(u_decodedToken);
+                    ColorUpdateRequest updateRequest = new ColorUpdateRequest(colorName, colorValue);
+                    ApiService apiService = RetrofitClientWithToken.getApiService(u_decodedToken);
 
-                        Call<CommonResponseModel> call = apiService.updateColor("Bearer " + u_decodedToken, u_id, updateRequest);
-                        call.enqueue(new Callback<CommonResponseModel>() {
-                            @Override
-                            public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    Call<CommonResponseModel> call = apiService.updateColor("Bearer " + u_decodedToken, u_id, updateRequest);
+                    call.enqueue(new Callback<CommonResponseModel>() {
+                        @Override
+                        public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
 
-                                if (response.isSuccessful()) {
-                                    customProgressDialog.hide();
-                                    CommonResponseModel apiResponse = response.body();
-                                    if (apiResponse != null && apiResponse.isSuccess()) {
-                                        String[] parts = apiResponse.getMessage().split("_");
-                                        int initial_amount=Integer.parseInt(parts[0]);
-                                        int walet_amount=Integer.parseInt(parts[1]);
-                                        int amount = initial_amount-walet_amount;
-                                        if(appDataUtil.getIntData("INIT_AMOUNT")==0){
-                                            appDataUtil.setIntData(initial_amount,"INIT_AMOUNT");
-                                        }
-//                                        appDataUtil.setIntData(appDataUtil.getIntData("ROUND_TOTAL")+amount,"ROUND_TOTAL");
-                                        appDataUtil.setIntData(walet_amount,"user_amount");
-                                        winAvlBlnc.setText("Available Balance: ₹"+walet_amount);
-                                        Toast.makeText(getContext(), "Amount Added="+amount, Toast.LENGTH_LONG).show();
-                                        updateGlobalValues(colorName,colorValue);
-                                        // Handle success message
+                            if (response.isSuccessful()) {
+                                customProgressDialog.hide();
+                                CommonResponseModel apiResponse = response.body();
+                                if (apiResponse != null && apiResponse.isSuccess()) {
+                                    String[] parts = apiResponse.getMessage().split("_");
+                                    int initial_amount = Integer.parseInt(parts[0]);
+                                    int walet_amount = Integer.parseInt(parts[1]);
+                                    int amount = initial_amount - walet_amount;
+                                    if (appDataUtil.getIntData("INIT_AMOUNT") == 0) {
+                                        appDataUtil.setIntData(initial_amount, "INIT_AMOUNT");
                                     }
+//                                        appDataUtil.setIntData(appDataUtil.getIntData("ROUND_TOTAL")+amount,"ROUND_TOTAL");
+                                    appDataUtil.setIntData(walet_amount, "user_amount");
+                                    winAvlBlnc.setText("Available Balance: ₹" + walet_amount);
+                                    Toast.makeText(getContext(), "Amount Added=" + amount, Toast.LENGTH_LONG).show();
+                                    updateGlobalValues(colorName, colorValue);
+                                    // Handle success message
                                 }
-
+                            }else{
+                                customProgressDialog.hide();
                             }
 
+                        }
 
-                            @Override
-                            public void onFailure(Call<CommonResponseModel> call, Throwable t) {
-                                customProgressDialog.hide();
-                                if(changeMainViewListener!=null){
-                                    changeMainViewListener.gotoLoginWin();
-                                }
-                         }
-                        });
 
-                    }
-                });
-            }else{
-                if(changeMainViewListener!=null){
-                    changeMainViewListener.gotoLoginWin();
+                        @Override
+                        public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                            customProgressDialog.hide();
+
+                        }
+                    });
+
                 }
-            }
+            });
+        } else {
+            customProgressDialog.hide();
+            Toast.makeText(getContext(), "Please login in again", Toast.LENGTH_SHORT).show();
+        }
 
 
     }
@@ -919,60 +903,60 @@ public class Win extends Fragment {
 //            }
 //        }
 //    }
-    private void  getRecord(){
+    private void getRecord() {
         ApiService apiService = RetrofitClientWithToken.getApiService(u_decodedToken);
-         Call<UserRecordResponseModel> modelCall=apiService.getRecordsByUser(u_decodedToken,u_id);
-         modelCall.enqueue(new Callback<UserRecordResponseModel>() {
-             @Override
-             public void onResponse(Call<UserRecordResponseModel> call, Response<UserRecordResponseModel> response) {
-                 if (response.isSuccessful()&&response.body()!=null){
-                     List<UserRecordModel> model = response.body().getData();
-                     recordAdapter=new RecordWinAdapter(model,getContext());
-                     recordRecycler.setAdapter(recordAdapter);
-                 }
-                 Log.e("TAG", "get result=: "+response );
-             }
+        Call<UserRecordResponseModel> modelCall = apiService.getRecordsByUser(u_decodedToken, u_id);
+        modelCall.enqueue(new Callback<UserRecordResponseModel>() {
+            @Override
+            public void onResponse(Call<UserRecordResponseModel> call, Response<UserRecordResponseModel> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<UserRecordModel> model = response.body().getData();
+                    recordAdapter = new RecordWinAdapter(model, getContext());
+                    recordRecycler.setAdapter(recordAdapter);
+                }
+                Log.e("TAG", "get result=: " + response);
+            }
 
-             @Override
-             public void onFailure(Call<UserRecordResponseModel> call, Throwable t) {
-                 Log.e("TAG", "get result=: "+t.getMessage() );
-             }
-         });
+            @Override
+            public void onFailure(Call<UserRecordResponseModel> call, Throwable t) {
+                Log.e("TAG", "get result=: " + t.getMessage());
+            }
+        });
 
 
     }
 
-    private void runAddRecord(int amount,String gameId,boolean winOrLoos,String winNumber,
-                              List<String > winColors,String totalAmount,String userId) {
+    private void runAddRecord(int amount, String gameId, boolean winOrLoos, String winNumber,
+                              List<String> winColors, String totalAmount, String userId) {
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Log.e("record", "runAddRecord: called" );
-                AddRecordRequestModel model=new AddRecordRequestModel(amount,gameId,winOrLoos,winNumber,winColors,totalAmount,userId);
+                Log.e("record", "runAddRecord: called");
+                AddRecordRequestModel model = new AddRecordRequestModel(amount, gameId, winOrLoos, winNumber, winColors, totalAmount, userId);
                 ApiService apiService = RetrofitClientWithToken.getApiService(u_decodedToken);
 
-                Call<UserRecordResponseModel> call=apiService.addRecord("Bearer " + u_decodedToken,model);
+                Call<UserRecordResponseModel> call = apiService.addRecord("Bearer " + u_decodedToken, model);
                 call.enqueue(new Callback<UserRecordResponseModel>() {
                     @Override
                     public void onResponse(Call<UserRecordResponseModel> call, Response<UserRecordResponseModel> response) {
-                        if(response.isSuccessful()&& response.body()!=null){
-                            List<UserRecordModel> userRecordModels=response.body().getData();
-                            recordAdapter=new RecordWinAdapter(userRecordModels,getContext());
+                        if (response.isSuccessful() && response.body() != null) {
+                            List<UserRecordModel> userRecordModels = response.body().getData();
+                            recordAdapter = new RecordWinAdapter(userRecordModels, getContext());
                             recordRecycler.setAdapter(recordAdapter);
 
-                            appDataUtil.setIntData(Integer.parseInt(response.body().getMessage()),"user_amount");
-                            winAvlBlnc.setText("Available Balance: ₹"+response.body().getMessage());
+                            appDataUtil.setIntData(Integer.parseInt(response.body().getMessage()), "user_amount");
+                            winAvlBlnc.setText("Available Balance: ₹" + response.body().getMessage());
                             resetGlobalValues();
                             Toast.makeText(getContext(), "Game Result Updated", Toast.LENGTH_LONG).show();
                         }
-                        Log.e("record", "onResponse: "+response );
+                        Log.e("record", "onResponse: " + response);
                     }
 
                     @Override
                     public void onFailure(Call<UserRecordResponseModel> call, Throwable t) {
-                     resetGlobalValues();
-                        Log.e("record", "onResponse: "+t.getMessage() );
+                        resetGlobalValues();
+                        Log.e("record", "onResponse: " + t.getMessage());
                     }
                 });
 
@@ -987,17 +971,19 @@ public class Win extends Fragment {
     }
 
     private void openCustomDialog(String color) {
-        CustomDialog customDialog = new CustomDialog(getActivity(), color,this); // 'this' refers to the current activity or context
+        CustomDialog customDialog = new CustomDialog(getActivity(), color, this); // 'this' refers to the current activity or context
         customDialog.show();
     }
+
     private ChangeMainViewListener changeMainViewListener;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof Win.ChangeMainViewListener){
-            changeMainViewListener=(Win.ChangeMainViewListener) context;
+        if (context instanceof Win.ChangeMainViewListener) {
+            changeMainViewListener = (Win.ChangeMainViewListener) context;
 
-        }else{
+        } else {
             throw new ClassCastException(context.toString());
         }
     }
@@ -1005,7 +991,7 @@ public class Win extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        changeMainViewListener=null;
+        changeMainViewListener = null;
 
     }
 

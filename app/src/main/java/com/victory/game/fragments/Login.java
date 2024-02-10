@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.victory.game.R;
 import com.victory.game.RetrofitClient;
 import com.victory.game.interfaces.ApiService;
+import com.victory.game.models.LoginMailRequestModel;
 import com.victory.game.models.LoginRequestModel;
 import com.victory.game.utils.AppDataUtil;
 import com.victory.game.utils.CurrentUserFetchWorker;
@@ -110,12 +111,19 @@ public class Login extends Fragment {
         progressDialog = new CustomProgressDialog(getContext());
 
 
+        AppDataUtil appDataUtil = AppDataUtil.getInstance(requireActivity().getApplicationContext());
+        String field_id=appDataUtil.getStringData("field_id");
+        String field_password=appDataUtil.getStringData("field_password");
+
         back=view.findViewById(R.id.back_login);
         goToRegister=view.findViewById(R.id.goto_register);
         goToForget=view.findViewById(R.id.goto_forget);
         login=view.findViewById(R.id.login_btn);
         phone_no=view.findViewById(R.id.login_phone);
         password_login=view.findViewById(R.id.login_password);
+        phone_no.setText(field_id);
+        password_login.setText(field_password);
+
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,7 +141,11 @@ public class Login extends Fragment {
                     // All fields are valid, proceed with the login
                     String phone = phone_no.getText().toString().trim();
                     String password = password_login.getText().toString().trim();
-                    login(phone, password);
+                    if(isNumeric(phone)){
+                        login(phone, password);
+                    }else{
+                        loginMail(phone,password);
+                    }
                 } else {
 
                     // Display the validation error message to the user
@@ -160,13 +172,83 @@ public class Login extends Fragment {
         });
 
     }
+
+    private void loginMail(String mail, String password) {
+        Executor executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(() -> {
+            LoginMailRequestModel loginRequestModel = new LoginMailRequestModel(mail, password);
+
+            ApiService apiService = RetrofitClient.getApiService();
+
+            Call<ResponseBody> call = apiService.loginMail(loginRequestModel);
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        progressDialog.hide();
+                        // Retrieve the "Authorization" header from the response
+                        String authorizationHeader = response.headers().get("Authorization");
+
+                        if (authorizationHeader != null) {
+                            // Split the header to extract the token
+                            String[] parts = authorizationHeader.split(" ");
+
+                            if (parts.length == 2) {
+                                String token = parts[1].trim();
+                                Log.d("TAG", "token= "+token);
+                                AppDataUtil appDataUtil = AppDataUtil.getInstance(requireActivity().getApplicationContext());
+                                String encodedToken=  appDataUtil.encodeString(token);
+                                appDataUtil.setStringData(mail, "field_id");
+                                appDataUtil.setStringData(password,"field_password");
+                                if(appDataUtil.setStringData(encodedToken, "token")){
+                                    postLogin();
+                                }
+
+
+                            }
+                            Log.d("TAG", "onResponse: Auth head"+authorizationHeader);
+                        } else {
+
+                            Toast.makeText(getContext(), "Authorization missing in response", Toast.LENGTH_LONG).show();
+                            // Handle the case where the "Authorization" header is missing
+                            Log.d("TAG", "");
+                        }
+                    } else {
+                        progressDialog.hide();
+                        Toast.makeText(getContext(), "Server Error Try Again", Toast.LENGTH_LONG).show();
+
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    progressDialog.hide();
+                    Toast.makeText(getContext(), "Login Failed"+t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                }
+            });
+        });
+    }
+
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
     public String validateLoginFields() {
         // Check if Phone Number is empty
         String phoneText = phone_no.getText().toString().trim();
         if (phoneText.isEmpty()) {
             return "Phone number is required";
-        } else if (phoneText.length() != 10) {
-            return "Phone number must be 10 digits";
         }
 
         // Check if Password is empty
@@ -178,22 +260,10 @@ public class Login extends Fragment {
         // All conditions are met, return success message
         return "success";
     }
-    private void postLogin(boolean b) {
-        Log.e("TAG", "postLogin: came int opost login login result="+b );
-        //hide the menu
-        if (b){
+    private void postLogin() {
         if (menuHiddenListener!=null){
                 menuHiddenListener.loginSuccess();
-
         }
-        }
-        else{
-            if (menuHiddenListener!=null){
-                menuHiddenListener.loginFail();
-
-            }
-        }
-        //post login method
     }
 
     private Login.OnMenuHiddenListener menuHiddenListener;
@@ -238,28 +308,23 @@ public class Login extends Fragment {
                                 Log.d("TAG", "token= "+token);
                                 AppDataUtil appDataUtil = AppDataUtil.getInstance(requireActivity().getApplicationContext());
                                 String encodedToken=  appDataUtil.encodeString(token);
-                                appDataUtil.setStringData(encodedToken, "token");
-//                                long expTime = getExpiryTimeFromToken(token);
-                                schedulePeriodicWork();
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        postLogin(true);
-                                    }
-                                },2000);
+                                appDataUtil.setStringData(phone, "field_id");
+                                appDataUtil.setStringData(password,"field_password");
+                                if(appDataUtil.setStringData(encodedToken, "token")){
+                                    postLogin();
+                                }
+
 
                             }
                             Log.d("TAG", "onResponse: Auth head"+authorizationHeader);
                         } else {
 
-                            postLogin(false);
                             // Handle the case where the "Authorization" header is missing
                             Log.d("TAG", "Authorization header missing in response");
                         }
                     } else {
                         progressDialog.hide();
                         Toast.makeText(getContext(), "Server Error Try Again", Toast.LENGTH_LONG).show();
-                        postLogin(false);
                     }
 
                 }
@@ -268,18 +333,18 @@ public class Login extends Fragment {
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     progressDialog.hide();
                     Toast.makeText(getContext(), "Login Failed"+t.getMessage(), Toast.LENGTH_SHORT).show();
-                    postLogin(false);
+
                 }
             });
         });
     }
 
     private void schedulePeriodicWork() {
-        long repeatInterval = 17;
+        long repeatInterval = 20;
         // Schedule a periodic work
         PeriodicWorkRequest periodicWork = new PeriodicWorkRequest.Builder(
-                CurrentUserFetchWorker.class, repeatInterval, TimeUnit.MINUTES)
-                .setInitialDelay(0, TimeUnit.MINUTES)  // Start immediately
+                CurrentUserFetchWorker.class, repeatInterval, TimeUnit.HOURS)
+                .setInitialDelay(20, TimeUnit.MINUTES)
                 .build();
 
         WorkManager.getInstance(getContext())

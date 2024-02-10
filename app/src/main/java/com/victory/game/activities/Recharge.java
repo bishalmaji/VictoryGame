@@ -20,6 +20,7 @@ import com.victory.game.R;
 import com.victory.game.RetrofitClientWithToken;
 import com.victory.game.interfaces.ApiService;
 import com.victory.game.models.AddPayRequestModel;
+import com.victory.game.models.AddRefRequestModel;
 import com.victory.game.models.ColorUpdateRequest;
 import com.victory.game.models.CommonResponseModel;
 import com.victory.game.models.PUpdateRequestModel;
@@ -29,6 +30,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -56,7 +58,7 @@ public class Recharge extends AppCompatActivity implements PaymentResultListener
     RadioButton s1,s2;
     ConstraintLayout upi_layout, add_cash_layout, razorpay_layout;
     int cash=100;
-    int chosen_server=1;//1 for upi 2 for pay
+    int chosen_server=2;//1 for upi 2 for pay
 
     private  ActivityResultLauncher<Intent> gpayLauncher;
     private  ActivityResultLauncher<Intent> phonePaLauncher;
@@ -83,6 +85,13 @@ public class Recharge extends AppCompatActivity implements PaymentResultListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recharge);
+        ImageView back=findViewById(R.id.rechargeBack);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         if(!isLoggedIn()){
             Toast.makeText(this, "Login Expired", Toast.LENGTH_SHORT).show();
             finish();
@@ -126,10 +135,10 @@ public class Recharge extends AppCompatActivity implements PaymentResultListener
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.radioBtnS1) {
-                    chosen_server = 1;
+                    chosen_server = 2;
                     // Option 1 is checked, update the global integer to 1
                 } else if (checkedId == R.id.radioBtnS2) {
-                    chosen_server = 2;
+                    chosen_server = 1;
                     // Option 2 is checked, update the global integer to 2
                 }
             }
@@ -305,7 +314,6 @@ public class Recharge extends AppCompatActivity implements PaymentResultListener
             @Override
             public void run() {
 
-
                 PUpdateRequestModel pUpdateRequestModel=new PUpdateRequestModel(tid);
                 ApiService apiService=RetrofitClientWithToken.getApiService(decodedToken);
                 Call<CommonResponseModel> call= apiService.updatePUser(decodedToken,uid,pUpdateRequestModel);
@@ -344,17 +352,14 @@ public class Recharge extends AppCompatActivity implements PaymentResultListener
                         @Override
                         public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                             if(response.isSuccessful() && response.body()!=null){
-                                int amount=Integer.parseInt(response.body().getMessage());
-                                appDataUtil.setIntData(amount ,"user_amount");
+                                String[] resArr=response.body().getMessage().split("@");
+                                String friendId=resArr[1];
+                                if(!friendId.equals("abc")){
+                                    updateFriendWallet(friendId.trim());
+                                }
+                                appDataUtil.setIntData(Integer.parseInt(resArr[0]) ,"user_amount");
+                                finish();
 
-                                Toast.makeText(Recharge.this, "Payment Add Success", Toast.LENGTH_SHORT).show();
-
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        finish();
-                                    }
-                                },300);
 
                             }else{
                                 Toast.makeText(Recharge.this, "Failed to add payment contact support", Toast.LENGTH_SHORT).show();
@@ -371,6 +376,43 @@ public class Recharge extends AppCompatActivity implements PaymentResultListener
                 }
             });
 
+    }
+
+    private void updateFriendWallet(String refId) {
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                AppDataUtil appDataUtil =AppDataUtil.getInstance(getApplicationContext());
+                String token = appDataUtil.getStringData("token").trim();
+                String uid = appDataUtil.getStringData("user_uid").trim();
+                String decodedToken = appDataUtil.decodeString(token);
+
+                AddRefRequestModel model=new AddRefRequestModel(refId,uid);
+
+                ApiService apiService = RetrofitClientWithToken.getApiService(decodedToken);
+
+                Call<CommonResponseModel> call2 = apiService.createReferral("Bearer " + decodedToken, model);
+                call2.enqueue(new Callback<CommonResponseModel>() {
+                    @Override
+                    public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                        if(response.isSuccessful() && response.body()!=null){
+                            Toast.makeText(Recharge.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                        }else{
+                            Toast.makeText(Recharge.this, "Failed to add payment contact support", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                        Toast.makeText(Recharge.this, "Failed to add contact support", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
     }
 
 
@@ -518,7 +560,7 @@ public class Recharge extends AppCompatActivity implements PaymentResultListener
         checkout.setKeyID(keyId);
 
         // set image
-        checkout.setImage(R.drawable.baseline_games_24);
+//        checkout.setImage(R.drawable.baseline_games_24);
 
         // initialize json object
         JSONObject object = new JSONObject();
@@ -553,7 +595,6 @@ public class Recharge extends AppCompatActivity implements PaymentResultListener
 
     @Override
     public void onPaymentSuccess(String s) {
-//        finish();
         runAddPayment(am,p_name,"ADD","GPay","success");
 
         Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();

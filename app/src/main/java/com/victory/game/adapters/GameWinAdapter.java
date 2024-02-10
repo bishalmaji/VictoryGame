@@ -54,6 +54,7 @@ public class GameWinAdapter extends RecyclerView.Adapter<GameWinAdapter.GameView
         }
     }
 
+
     @Override
     public int getItemCount() {
         return 10;

@@ -2,14 +2,18 @@ package com.victory.game.interfaces;
 
 import com.victory.game.models.AddPayRequestModel;
 import com.victory.game.models.AddRecordRequestModel;
+import com.victory.game.models.AddRefRequestModel;
 import com.victory.game.models.AddWithdrawalRequestModel;
 import com.victory.game.models.ColorUpdateRequest;
 import com.victory.game.models.CurrentUserResponseModel;
 import com.victory.game.models.GameResultResponseModel;
+import com.victory.game.models.LoginMailRequestModel;
 import com.victory.game.models.LoginRequestModel;
+import com.victory.game.models.OtpMailRequestModel;
 import com.victory.game.models.OtpRequestModel;
 import com.victory.game.models.CommonResponseModel;
 import com.victory.game.models.PUpdateRequestModel;
+import com.victory.game.models.RegisterMailRequestModel;
 import com.victory.game.models.RegisterRequestModel;
 import com.victory.game.models.UserRecordResponseModel;
 
@@ -25,12 +29,21 @@ import retrofit2.http.Path;
 public interface ApiService {
     @POST("/api/otp/send") // Endpoint for sending OTP
     Call<CommonResponseModel> sendOtp(@Body OtpRequestModel request);
+    @POST("/api/otp/sendmail") // Endpoint for sending OTP
+    Call<CommonResponseModel> sendMailOtp(@Body OtpMailRequestModel request);
     @POST("/api/users/register") // Endpoint for sending OTP
     Call<CommonResponseModel> register(@Body RegisterRequestModel request);
+
+    @POST("/api/users/registerMail") // Endpoint for sending OTP
+    Call<CommonResponseModel> registerMail(@Body RegisterMailRequestModel request);
 
     @Headers({"Accept: application/json"})
     @POST("/api/users/login")
     Call<ResponseBody> login(@Body LoginRequestModel request);
+
+    @Headers({"Accept: application/json"})
+    @POST("/api/users/loginMail")
+    Call<ResponseBody> loginMail(@Body LoginMailRequestModel request);
 
     @POST("/api/game/update-color/user/{userId}")
     Call<CommonResponseModel> updateColor(
@@ -48,6 +61,10 @@ public interface ApiService {
     Call<CommonResponseModel> createPayment(
             @Header("Authorization") String token,
             @Body AddPayRequestModel request);
+    @POST("/api/payments/payment/addReferral")
+    Call<CommonResponseModel> createReferral(
+            @Header("Authorization") String token,
+            @Body AddRefRequestModel request);
 
     @POST("/api/payments/withdrawal/add")
     Call<CommonResponseModel> createWithdrawalRequest(

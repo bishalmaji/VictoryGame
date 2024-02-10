@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClientWithToken {
 
-    private static final String BASE_URL = "https://victory-ceer.onrender.com";
+    private static final String BASE_URL = "https://victory-game.onrender.com";
     private static ApiService apiService;
 
     public static ApiService getApiService(String token) {

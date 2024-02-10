@@ -7,18 +7,36 @@
     tools:context=".fragments.Register">
 
     <EditText
+        android:id="@+id/register_email"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="32dp"
+        android:width="0dp"
+        android:drawableStart="@drawable/mail"
+        android:hint="Email"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <EditText
         android:id="@+id/register_phone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="32dp"
         android:width="0dp"
         android:background="@drawable/bg_square_box"
         android:ems="10"
-        android:hint="Mobile Number"
+        android:hint="Phone"
         android:inputType="phone"
         android:padding="10dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,41 +44,44 @@
 
     <EditText
         android:id="@+id/register_otp"
+        style="@style/EditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:width="0dp"
-        android:background="@drawable/bg_square_box"
+        android:drawableStart="@drawable/code"
         android:ems="10"
         android:hint="Verification Code"
         android:inputType="numberSigned"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_phone" />
+        app:layout_constraintTop_toBottomOf="@+id/register_email" />
 
     <Button
         android:id="@+id/register_btn"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        style="@style/FillButtonStyle"
+        android:layout_width="0dp"
+        android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
+        android:padding="0dp"
         android:text="Register"
-        app:cornerRadius="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkedTextView" />
 
     <EditText
         android:id="@+id/register_password"
+        style="@style/EditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:width="0dp"
-        android:background="@drawable/bg_square_box"
+        android:drawableStart="@drawable/password"
         android:ems="10"
         android:hint="Create Password"
         android:inputType="textPassword"
@@ -71,13 +92,14 @@
 
     <EditText
         android:id="@+id/register_refral"
+        style="@style/EditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:width="0dp"
-        android:background="@drawable/bg_square_box"
+        android:drawableStart="@drawable/people"
         android:ems="10"
         android:hint="Referal Code"
         android:inputType="text"
@@ -87,14 +109,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_password" />
 
+    <Button
+        android:id="@+id/otp_btn_register"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="4dp"
+        android:text="Get Otp"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        app:cornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/register_otp"
+        app:layout_constraintEnd_toEndOf="@+id/register_otp"
+        app:layout_constraintTop_toTopOf="@+id/register_otp" />
+
     <CheckedTextView
         android:id="@+id/checkedTextView"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:checked="true"
-        android:drawableStart="@drawable/baseline_tick_24"
         android:gravity="center_vertical"
         android:text="I aggreee"
         app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +141,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="32dp"
         android:text="Terms and policies"
-        android:textColor="@color/design_default_color_primary"
         app:layout_constraintBottom_toBottomOf="@+id/checkedTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/checkedTextView"
@@ -115,14 +148,8 @@
 
     <TextView
         android:id="@+id/textView7"
-        android:layout_width="0dp"
-        android:layout_height="46dp"
-        android:background="#673AB7"
-        android:gravity="center_vertical"
-        android:paddingStart="50dp"
+        style="@style/ToolBarStyle"
         android:text="Register"
-        android:textColor="@color/white"
-        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -140,15 +167,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView7" />
 
-    <Button
-        android:id="@+id/otp_btn_register"
+    <Switch
+        android:id="@+id/registerSwitch"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginEnd="4dp"
-        android:text="GET OTP"
-        app:cornerRadius="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/register_otp"
-        app:layout_constraintEnd_toEndOf="@+id/register_otp"
-        app:layout_constraintTop_toTopOf="@+id/register_otp" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:text="Email"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
