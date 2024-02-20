@@ -53,7 +53,7 @@ public class Recharge extends AppCompatActivity implements PaymentResultListener
     private Button addCashButton;
     TextView a100,a300,a500,a1000,a2000,a5000,a10000,a20000,a50000;
     TextView amountShow;
-    TextView amountPayTv;
+    TextView amountPayTv,rechBalShow;
     LinearLayout gPayL,phonePeL,paytmL,upL;
     RadioButton s1,s2;
     ConstraintLayout upi_layout, add_cash_layout, razorpay_layout;
@@ -149,6 +149,9 @@ public class Recharge extends AppCompatActivity implements PaymentResultListener
         razorpay_layout=findViewById(R.id.razorpay_server_layout);
         amountShow=findViewById(R.id.recharge_amount_show);
         amountPayTv=findViewById(R.id.amount_payable_tv);
+        rechBalShow=findViewById(R.id.recharge_balance_show);
+        int valueB=getIntent().getIntExtra("RechargeBal",0);
+        rechBalShow.setText("Balance: "+valueB);
 
         gPayL=findViewById(R.id.gpayLbtn);
         phonePeL=findViewById(R.id.phonePeLbtn);
@@ -481,7 +484,7 @@ public class Recharge extends AppCompatActivity implements PaymentResultListener
     }
 
     private void openGpay() {
-        runBeforePayment();
+
         try {
             // Specify the package name for Google Pay
             String gpayPackageName = "com.google.android.apps.nbu.paisa.user";

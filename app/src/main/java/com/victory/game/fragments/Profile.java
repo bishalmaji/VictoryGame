@@ -37,6 +37,7 @@ package com.victory.game.fragments;
         import com.victory.game.activities.Transaction;
         import com.victory.game.activities.Withdrawal;
         import com.victory.game.utils.AppDataUtil;
+        import com.victory.game.utils.MessageDialog;
 
         import java.util.Objects;
 
@@ -81,8 +82,8 @@ public class Profile extends Fragment {
         super.onResume();
         if(isLoggedIn()){
             AppDataUtil appDataUtil=AppDataUtil.getInstance(requireActivity().getApplicationContext());
-            int updated_amount=  appDataUtil.getIntData("user_amount");
-            available_balance.setText("Available balance: ₹"+updated_amount);
+            u_amount=  appDataUtil.getIntData("user_amount");
+            available_balance.setText("Available balance: ₹"+u_amount);
         }
     }
     @Override
@@ -128,6 +129,14 @@ public class Profile extends Fragment {
 
         // Initialize ImageView
         alert = view.findViewById(R.id.user_alert_iv);
+        alert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MessageDialog.showAlert(getContext(),"Alert","Dear Victoryshop.in members. About us - www.victoryshop.in is Big " +
+                        "Investment platform where anyone can come and get profit easily. Customer Service Team.\n Email:victoryvip@victoryvip.com");
+
+            }
+        });
 
         wallet_layout=view.findViewById(R.id.wallet_layout);
         about_layout=view.findViewById(R.id.aboutLayout);
@@ -160,7 +169,10 @@ public class Profile extends Fragment {
             @Override
             public void onClick(View v) {
                 // Handle make recharge button click here
-                openActivity(Recharge.class);
+                Intent ir=new Intent(requireActivity(), Recharge.class);
+                ir.putExtra("RechargeBal" ,u_amount);
+                startActivity(ir);
+
             }
         });
 
@@ -171,12 +183,7 @@ public class Profile extends Fragment {
             }
         });
 
-        alert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle alert button click here
-            }
-        });
+
     }
 
     private void setUserValue() {
@@ -201,7 +208,7 @@ public class Profile extends Fragment {
                 appDataUtil.setBooleanData(false,"login");
                 appDataUtil.setStringData("","token");
 
-                changeMainViewListener.gotoLoginProfile();
+//                changeMainViewListener.gotoLoginProfile();
 
             }
         });
@@ -226,9 +233,9 @@ public class Profile extends Fragment {
             } else if (v.getId() == R.id.user_mobile) {
                 Toast.makeText(getContext(), "User Mobile", Toast.LENGTH_SHORT).show();
                 // Handle the user_mobile TextView click
+//                this was this
             } else if (v.getId() == R.id.user_avl_amount) {
                 Toast.makeText(getContext(), "Available Balance", Toast.LENGTH_SHORT).show();
-
                 // Handle the user_avl_amount TextView click
             } else if (v.getId() == R.id.user_refer_history) {
                  openActivity(ReferHistory.class);
@@ -244,8 +251,9 @@ public class Profile extends Fragment {
                 }
                 // Handle the user_wallet TextView click
             } else if (v.getId() == R.id.user_recharge) {
-                openActivity(Recharge.class);
-
+                Intent ir=new Intent(requireActivity(), Recharge.class);
+                ir.putExtra("RechargeBal" ,u_amount);
+                startActivity(ir);
                 // Handle the user_recharge TextView click
             } else if (v.getId() == R.id.user_withdraw) {
                 openActivity(Withdrawal.class);

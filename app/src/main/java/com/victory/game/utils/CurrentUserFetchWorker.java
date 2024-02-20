@@ -65,7 +65,9 @@ public class CurrentUserFetchWorker extends Worker {
                             appDataUtil.setStringData(data.getUid(),"user_uid");
                             appDataUtil.setStringData(data.getName(),"user_name");
                             appDataUtil.setStringData(data.getPhone(),"user_phone");
-                            appDataUtil.setIntData(data.getAmount(),"user_amount");
+                            appDataUtil.setIntData(0,"user_amount");
+//                            appDataUtil.setIntData( data.getReferWalet(),"user_refer_amount");
+//                            appDataUtil.setStringData( data.getRefid(),"refid");
 
 
                         }else{

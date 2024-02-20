@@ -3,27 +3,46 @@ package com.victory.game.models;
 import com.google.gson.annotations.SerializedName;
 
 public class ResultUserModel {
-    @SerializedName("uid")
-    private String uid; // This field represents the MongoDB-generated ID
-
-    @SerializedName("name")
+    private String uid;
+    private String  showId;
     private String name;
-
-    @SerializedName("phone")
     private String phone;
+    private  String mail;
 
-    @SerializedName("amount")
-    private int amount;// Assuming 'amount' is an integer, change the type as needed
-    @SerializedName("referal")
+    public ResultUserModel(String uid, String showId, String name, String phone, String mail) {
+        this.uid = uid;
+        this.showId = showId;
+        this.name = name;
+        this.phone = phone;
+        this.mail = mail;
+    }
 
-    private String referal;
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
-    public String getReferal() {
-        return referal;
+    public void setShowId(String showId) {
+        this.showId = showId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public String getUid() {
         return uid;
+    }
+
+    public String getShowId() {
+        return showId;
     }
 
     public String getName() {
@@ -34,7 +53,7 @@ public class ResultUserModel {
         return phone;
     }
 
-    public int getAmount() {
-        return amount;
+    public String getMail() {
+        return mail;
     }
 }

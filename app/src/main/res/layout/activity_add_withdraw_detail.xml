@@ -92,12 +92,12 @@
 
         <EditText
             android:id="@+id/waifsc"
-            style="@style/EditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:background="@drawable/bg_square_box"
             android:ems="10"
             android:hint="IFSC Code"
             android:inputType="text" />
@@ -149,7 +149,6 @@
 
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:drawableStart="@drawable/code"
                 android:ems="10"
                 android:hint="Verification Code"
                 android:inputType="numberSigned"

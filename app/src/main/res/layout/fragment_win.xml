@@ -31,13 +31,14 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout4"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:background="?attr/colorContainer"
                     app:layout_constraintBottom_toTopOf="@+id/textView12"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+                    app:layout_constraintTop_toBottomOf="@+id/winTab"
                     tools:ignore="PrivateResource">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -106,7 +107,7 @@
                     android:layout_marginTop="16dp"
                     android:text="Period"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+                    app:layout_constraintTop_toBottomOf="@+id/winTab" />
 
                 <TextView
                     android:id="@+id/textView9"
@@ -335,6 +336,43 @@
                         tools:src="@tools:sample/backgrounds/scenic" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/winTab"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/tabItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Accord" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/tabItem2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Plibit" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/tabItem3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Blingle" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/tabItem4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Leopold" />
+                </com.google.android.material.tabs.TabLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -347,24 +385,24 @@
 
                 <TextView
                     android:id="@+id/textView14"
-                    android:layout_width="0dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:padding="10dp"
                     android:text="Result"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/textView11"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/textView"
-                    android:layout_width="0dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:padding="10dp"
                     android:text="Game No"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="12sp"
                     app:layout_constraintEnd_toStartOf="@+id/textView10"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -376,7 +414,7 @@
                     android:gravity="center_horizontal"
                     android:padding="10dp"
                     android:text="Price"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="12sp"
                     app:layout_constraintEnd_toStartOf="@+id/textView11"
                     app:layout_constraintStart_toEndOf="@+id/textView"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -388,55 +426,68 @@
                     android:gravity="center_horizontal"
                     android:padding="10dp"
                     android:text="Number"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="12sp"
                     app:layout_constraintEnd_toStartOf="@+id/textView14"
                     app:layout_constraintStart_toEndOf="@+id/textView10"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/game_result_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="wrap_content"
 
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cl_two">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/game_result_recycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                <ImageButton
+                    android:id="@+id/next_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/circular_bg"
+                    android:src="@drawable/arrowright"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/previous_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/previous_button" />
+
+                <ImageButton
+                    android:id="@+id/previous_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="16dp"
+
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/circular_bg"
+                    android:src="@drawable/arrowleft"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/next_button"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/next_button"
+                <TextView
+                    android:id="@+id/result_page_tv"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/baseline_tick_24"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <ImageView
-                    android:id="@+id/previous_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/baseline_tick_24"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/next_button" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/previous_button"
+                    app:layout_constraintEnd_toStartOf="@+id/previous_button"
+                    app:layout_constraintTop_toTopOf="@+id/previous_button" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -452,18 +503,53 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toTopOf="@+id/divider17"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider15">
 
+                <ImageButton
+                    android:id="@+id/next_buttonR"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/circular_bg"
+                    android:src="@drawable/arrowright"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/record_recycler" />
+
+                <ImageButton
+                    android:id="@+id/previous_buttonR"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/circular_bg"
+                    android:src="@drawable/arrowleft"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/next_buttonR"
+                    app:layout_constraintEnd_toStartOf="@+id/next_buttonR"
+                    app:layout_constraintTop_toTopOf="@+id/next_buttonR" />
+
+                <TextView
+                    android:id="@+id/result_page_tvR"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/previous_buttonR"
+                    app:layout_constraintEnd_toStartOf="@+id/previous_buttonR"
+                    app:layout_constraintTop_toTopOf="@+id/previous_buttonR" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/record_recycler"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginBottom="16dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

@@ -2,8 +2,6 @@ package com.victory.game.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class UserRecordModel {
     @SerializedName("_id")
     private String _id;
@@ -26,6 +24,10 @@ public class UserRecordModel {
 
     @SerializedName("totalAmount")
     private String totalAmount;
+
+    @SerializedName("timestamp")
+    private String timestamp;
+
 
     public String get_id() {
         return _id;
@@ -90,7 +92,7 @@ public class UserRecordModel {
     }
 
 
-    public UserRecordModel(String _id, int amount, String gameId, boolean winOrLoss, String winNumber, String[] winColor, String totalAmount) {
+    public UserRecordModel(String _id, int amount, String gameId, boolean winOrLoss, String winNumber, String[] winColor, String totalAmount, String timestamp) {
         this._id = _id;
         this.amount = amount;
         this.gameId = gameId;
@@ -98,6 +100,14 @@ public class UserRecordModel {
         this.winNumber = winNumber;
         this.winColor = winColor;
         this.totalAmount = totalAmount;
+        this.timestamp = timestamp;
     }
 
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
 }

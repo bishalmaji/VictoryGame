@@ -8,8 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.victory.game.R;
+import com.victory.game.utils.AppDataUtil;
 
 public class AddWithdrawDetail extends AppCompatActivity {
 
@@ -50,20 +52,68 @@ public class AddWithdrawDetail extends AppCompatActivity {
         continueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (type != null && type.equals("upi")) {
-                    runUPISave();
+                    String upi= upiEt.getText().toString().trim();
+                    String uname=username.getText().toString().trim();
+                    String umobile=mobileEt.getText().toString().trim();
+
+                    if(upi.isEmpty()||
+                            uname.isEmpty()||
+                            umobile.isEmpty()){
+                        Toast.makeText(AddWithdrawDetail.this, "All Fields Required", Toast.LENGTH_SHORT).show();
+                    }else{
+                        runUPISave(upi,uname,umobile);
+                    }
                 }else{
-                    runBankSave();
+                    String ifsc=ifscBank.getText().toString().trim();
+                    String uname=username.getText().toString().trim();
+                    String umobile=mobileEt.getText().toString().trim();
+                    String ubaccount=accountBank.getText().toString().trim();
+                    String ubname=nameBank.getText().toString().trim();
+                    if(ifsc.isEmpty()||
+                            uname.isEmpty()||
+                            umobile.isEmpty()||
+                            ubaccount.isEmpty()||ubname.isEmpty()){
+                        Toast.makeText(AddWithdrawDetail.this, "All Fields Required", Toast.LENGTH_SHORT).show();
+                    }else{
+                        runBankSave(ifsc,uname,umobile,ubaccount,ubname);
+                    }
                 }
             }
         });
     }
 
-    private void runBankSave() {
+    private void runBankSave(String ifsc, String uname, String umobile, String ubaccount, String ubname) {
+        AppDataUtil appDataUtil = AppDataUtil.getInstance(getApplicationContext());
+        appDataUtil.setBooleanData(true,"wbank");
+        appDataUtil.setStringData(ifsc,"wifsc");
+        appDataUtil.setStringData(uname,"wname");
+        appDataUtil.setStringData(umobile,"wmobile");
+        appDataUtil.setStringData(ubaccount,"waccountbank");
+        appDataUtil.setStringData(ubname,"wnamebank");
+
+        appDataUtil.setBooleanData(false,"wisupi");
+        appDataUtil.setStringData("","wupi");
+
+
+        finish();
+
     }
 
-    private void runUPISave() {
-        
+    private void runUPISave(String upi, String uname, String umobile) {
+        AppDataUtil appDataUtil = AppDataUtil.getInstance(getApplicationContext());
+        appDataUtil.setStringData("","wifsc");
+        appDataUtil.setStringData("","waccountbank");
+        appDataUtil.setStringData("","wnamebank");
+        appDataUtil.setBooleanData(false,"wbank");
+
+        appDataUtil.setBooleanData(true,"wisupi");
+        appDataUtil.setStringData(upi,"wupi");
+        appDataUtil.setStringData(uname,"wname");
+        appDataUtil.setStringData(umobile,"wmobile");
+        finish();
+
     }
 
     private void makeUpiDesign() {

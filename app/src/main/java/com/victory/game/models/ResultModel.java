@@ -52,16 +52,6 @@ public class ResultModel {
         return winNumber;
     }
 
-    public Date getWinTime() {
-        // Parse the winTime string into a Date object
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss 'GMT'Z (zzzz)", Locale.US);
-        try {
-            return sdf.parse(winTime);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null; // Handle parsing error as needed
-        }
-    }
 
     public List<String> getColorPriceArray() {
         return colorPriceArray;

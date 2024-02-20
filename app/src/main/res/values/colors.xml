@@ -20,7 +20,8 @@
     <color name="dark_bg">#4E4E4E</color>
     <color name="light_bg">#F4F4F4</color>
 
-
+    <color name="red">#F44336</color>
+    <color name="green">#4ED854</color>
     <!-- Common Colors -->
 
 </resources>

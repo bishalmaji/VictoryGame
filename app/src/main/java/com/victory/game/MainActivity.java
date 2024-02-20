@@ -23,6 +23,7 @@ import com.victory.game.models.CurrentUserResponseModel;
 
 import com.victory.game.models.ResultUserModel;
 import com.victory.game.utils.AppDataUtil;
+import com.victory.game.utils.MessageDialog;
 
 
 import java.util.concurrent.Executor;
@@ -67,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements Profile.ChangeMai
             bottomNavigationView.getMenu().findItem(R.id.profile).setVisible(true);
             bottomNavigationView.getMenu().findItem(R.id.win).setVisible(true);
             bottomNavigationView.getMenu().findItem(R.id.login).setVisible(false);
+            MessageDialog.showAlert(this,"Alert","Dear Victoryshop.in members. About us - www.victoryshop.in is Big " +
+                    "Investment platform where anyone can come and get profit easily. Customer Service Team.\n Email:victoryvip@victoryvip.com");
+
         } else {
             runNotLoggedIn();
         }
@@ -76,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements Profile.ChangeMai
 
 
     private void getCurrentUserWithToken(String token) {
+        Log.e("bkmmmmm", "decoded token: "+token );
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(new Runnable() {
             @Override
@@ -93,15 +98,19 @@ public class MainActivity extends AppCompatActivity implements Profile.ChangeMai
                             appDataUtil.setStringData(data.getUid(), "user_uid");
                             appDataUtil.setStringData(data.getName(), "user_name");
                             appDataUtil.setStringData(data.getPhone(), "user_phone");
-                            appDataUtil.setIntData(data.getAmount(), "user_amount");
+                            appDataUtil.setIntData(0, "user_amount");
+                            Log.e("bige", "not log: "+response);
+
                         } else {
                             runNotLoggedIn();
-                        }
+                            Log.e("bige", "not log: "+response);
 
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<CurrentUserResponseModel> call, Throwable t) {
+                        Log.e("bige", "onResponse:kjhgkjhkkjh "+t.getMessage());
                         runNotLoggedIn();
                     }
                 });
@@ -131,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements Profile.ChangeMai
         appDataUtil.setBooleanData(true, "login");
         String encodedToken = appDataUtil.getStringData("token").trim();
         String decodedToken = appDataUtil.decodeString(encodedToken);
+        Toast.makeText(this, ""+decodedToken, Toast.LENGTH_SHORT).show();
+
         getCurrentUserWithToken(decodedToken);
         bottomNavigationView.getMenu().findItem(R.id.profile).setVisible(true);
         bottomNavigationView.getMenu().findItem(R.id.win).setVisible(true);
@@ -147,9 +158,9 @@ public class MainActivity extends AppCompatActivity implements Profile.ChangeMai
 
     @Override
     public void loginSuccess() {
-        Log.e("bkmmmmmmmm", "loginSuccess: ");
         runLoggedIn();
         navController.popBackStack(R.id.home, false);
+        Log.e("bkmmmmmmmm", "loginSuccess: ");
     }
 
     @Override

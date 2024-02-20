@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,10 +30,12 @@ import com.victory.game.activities.Recharge;
 import com.victory.game.adapters.GameWinAdapter;
 import com.victory.game.adapters.RecordWinAdapter;
 import com.victory.game.interfaces.ApiService;
+import com.victory.game.models.AddPayRequestModel;
 import com.victory.game.models.AddRecordRequestModel;
 import com.victory.game.models.ColorUpdateRequest;
 import com.victory.game.models.CommonResponseModel;
 import com.victory.game.models.GameResultResponseModel;
+import com.victory.game.models.PUpdateRequestModel;
 import com.victory.game.models.ResultModel;
 import com.victory.game.models.UserRecordModel;
 import com.victory.game.models.UserRecordResponseModel;
@@ -40,6 +43,7 @@ import com.victory.game.utils.AppDataUtil;
 import com.victory.game.utils.CustomDialog;
 import com.victory.game.utils.CustomProgressDialog;
 
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,19 +65,16 @@ public class Win extends Fragment {
     private int colorValue = 100;
     private CountDownTimer countdownTimer;
     private TextView timer, current_game_id;
-    private long timeDifference;
-    //    private GameWinAdapter adapter;
     private String u_decodedToken, u_id;
     private int u_amount = 0;
-    //    private boolean isPlayedColor=false;
-//    private boolean isPlayedNumber=false;
-//    private int redValue=0,greenValue=0,pinkValue=0, oneV=0,twoV=0,threeV=0,fourV=0,fiveV=0,sixV=0,sevenV=0,eightV=0
-//            ,nineV=0,tenV=0;
+
     private RecordWinAdapter recordAdapter;
     private TextView winAvlBlnc;
     private Button winMainRechargeBtn, winReadRules;
     private ImageView winRetry;
-    private ImageView gameRprev, gameRnext;
+    private ImageButton gameRprev, gameRnext;
+    private ImageButton gameRecprev, gameRecnext;
+
     private GameWinAdapter adapter;
 
 
@@ -95,6 +96,26 @@ public class Win extends Fragment {
 
     private ConstraintLayout gameLayout;
     private CustomProgressDialog customProgressDialog;
+
+    private int currentPage = 0;
+    private static final int PAGE_SIZE = 8;
+    List<ResultModel> gameResult=new ArrayList<>();
+    List<UserRecordModel> userRecord=new ArrayList<>();
+    private TextView resultPageTv;
+    private  String paginationTextResult="";
+    private void loadPage(int page) {
+        adapter.setCurrentPage(page);
+    }
+
+    private int currentPageR = 0;
+    private static final int PAGE_SIZER = 8;
+//    List<ResultModel> gameResult=new ArrayList<>();
+    private TextView resultPageTvR;
+    private  String paginationTextResultR="";
+    private void loadPageR(int page) {
+        recordAdapter.setCurrentPage(page);
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -135,6 +156,11 @@ public class Win extends Fragment {
         gameLayout = view.findViewById(R.id.cl_one);
         gameResultRecycler = view.findViewById(R.id.game_result_recycler);
         recordRecycler = view.findViewById(R.id.record_recycler);
+        resultPageTv=view.findViewById(R.id.result_page_tv);
+        resultPageTv.setText(paginationTextResult);
+
+        resultPageTvR=view.findViewById(R.id.result_page_tvR);
+        resultPageTvR.setText(paginationTextResultR);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext()) {
             @Override
             public boolean canScrollVertically() {
@@ -146,6 +172,7 @@ public class Win extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(requireActivity(), Recharge.class);
+                intent.putExtra("RechargeBal",appDataUtil.getIntData("user_amount"));
                 startActivity(intent);
             }
         });
@@ -252,8 +279,7 @@ public class Win extends Fragment {
 
         gameResultRecycler.setHasFixedSize(true);
 
-        // Initialize with an empty list
-//        gameResultRecycler.setAdapter(adapter);
+
 
         getResults();
         fetchTimeFromAPI();
@@ -263,16 +289,69 @@ public class Win extends Fragment {
         gameRnext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int totalPages = (int) Math.ceil((double) gameResult.size() / PAGE_SIZE);
+                if (currentPage < totalPages - 1) {
+                    currentPage++;
+                    loadPage(currentPage);
+                    int no=(currentPage*8);
+                    paginationTextResult=no+" - "+String.valueOf(no+8)+" of " +gameResult.size();
+                    resultPageTv.setText(paginationTextResult);
+                }
             }
         });
-
         gameRprev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (currentPage > 0) {
+                    currentPage--;
+                    loadPage(currentPage);
+                    int no=(currentPage*8);
+                    paginationTextResult=no+" - "+String.valueOf(no+8)+" of " +gameResult.size();
+                    resultPageTv.setText(paginationTextResult);
 
+                }else{
+                    paginationTextResultR="0-8 of "+userRecord.size();
+                    resultPageTvR.setText(paginationTextResultR);
+                }
             }
         });
 
+
+
+        gameRecnext = view.findViewById(R.id.next_buttonR);
+        gameRecprev = view.findViewById(R.id.previous_buttonR);
+        gameRecnext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int totalPages = (int) Math.ceil((double) userRecord.size() / PAGE_SIZE);
+                if (currentPageR < totalPages - 1) {
+                    currentPageR++;
+                    loadPageR(currentPageR);
+                    int no=(currentPageR*8);
+                    paginationTextResultR=no+" - "+String.valueOf(no+8)+" of " +userRecord.size();
+                    resultPageTvR.setText(paginationTextResultR);
+                }
+            }
+        });
+
+        gameRecprev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentPageR > 0) {
+                    currentPageR--;
+                    loadPageR(currentPageR);
+                    int no=(currentPageR*8);
+
+                    paginationTextResultR=no+" - "+String.valueOf(no+8)+" of " +userRecord.size();
+
+                }else{
+                    paginationTextResultR="0-8 of "+userRecord.size();
+
+                }
+                resultPageTvR.setText(paginationTextResultR);
+
+            }
+        });
 
     }
 
@@ -404,9 +483,6 @@ public class Win extends Fragment {
 
 
     private void getResults() {
-        Log.e("TAG", "getResults: ");
-       
-        Log.e("TAG", "logged in: ");
         customProgressDialog.show();
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(new Runnable() {
@@ -424,16 +500,15 @@ public class Win extends Fragment {
                             // Check if the response indicates success
                             GameResultResponseModel resultModels = response.body();
                             if (resultModels != null && resultModels.isSuccess()) {
-                                List<ResultModel> gameResult = resultModels.getData();
+                                gameResult = resultModels.getData();
+
                                 if (gameResult != null && !gameResult.isEmpty()) {
+                                    paginationTextResult="0-8 of "+gameResult.size();
+                                    resultPageTv.setText(paginationTextResult);
+
                                     Collections.reverse(gameResult);
-                                    Log.d("TAG", "onResponse: " + gameResult.get(0));
                                     adapter = new GameWinAdapter(getContext(), gameResult);
                                     gameResultRecycler.setAdapter(adapter);
-                                    if (gameRprev.getVisibility() != View.VISIBLE) {
-                                        gameRprev.setVisibility(View.VISIBLE);
-                                        gameRprev.setVisibility(View.VISIBLE);
-                                    }
 
                                     customProgressDialog.hide();
 
@@ -583,25 +658,22 @@ public class Win extends Fragment {
                                         int totalWon = winAmount + numberWinAmount;
 
                                         if (totalWon > expence) {
-                                            runAddRecord(totalWon, latestWinShowId, true, latestWinNumber, latestWinColor, String.valueOf(expence), u_id);
+                                            runAddRecord(totalWon, latestWinShowId, true, latestWinNumber, latestWinColor, latestWinPrice, u_id);
                                         } else {
                                             if (numberWinAmount > 0 && winAmount <= 0) {
-                                                runAddRecord(numberWinAmount, latestWinShowId, true, latestWinNumber, latestWinColor, String.valueOf(expence), u_id);
+                                                runAddRecord(numberWinAmount, latestWinShowId, true, latestWinNumber, latestWinColor, latestWinPrice, u_id);
                                             } else if (numberWinAmount <= 0 && winAmount > 0) {
-                                                runAddRecord(winAmount, latestWinShowId, true, latestWinNumber, latestWinColor, String.valueOf(expence), u_id);
+                                                runAddRecord(winAmount, latestWinShowId, true, latestWinNumber, latestWinColor, latestWinPrice, u_id);
                                             } else {
-                                                runAddRecord(expence, latestWinShowId, false, latestWinNumber, latestWinColor, String.valueOf(expence), u_id);
+                                                runAddRecord(expence, latestWinShowId, false, latestWinNumber, latestWinColor,latestWinPrice, u_id);
                                             }
 
                                         }
 
-                                        //here deceide win or loss
-                                        Log.e("record", "end of is played now reset value");
-//                                            AddToUserWalet(winAmount+numberWinAmount,latestWinShowId,latestWinNumber,latestWinColor,String.valueOf(totalBet));
-
                                     }//user played number or colour
                                 }
                             } else {
+                                Toast.makeText(getContext(), "Error get result 1", Toast.LENGTH_LONG).show();
                                 // Handle API response indicating failure
                                 Log.d("TAG", "API response indicates failure.");
                                 if (changeMainViewListener != null) {
@@ -610,17 +682,22 @@ public class Win extends Fragment {
                             }
 
                         } else {
-                            customProgressDialog.hide();
+                            Toast.makeText(getContext(), "Error get result 2", Toast.LENGTH_LONG).show();
+
+
                             if (changeMainViewListener != null) {
                                 changeMainViewListener.gotoLoginWin();
                             }
                         }
+                        customProgressDialog.hide();
                     }
 
 
                     @Override
                     public void onFailure(Call<GameResultResponseModel> call, Throwable t) {
                         // Handle failure (e.g., network issues)
+                        Toast.makeText(getContext(), "Error get result 3", Toast.LENGTH_LONG).show();
+
 
                         customProgressDialog.hide();
                         if (changeMainViewListener != null) {
@@ -771,34 +848,38 @@ public class Win extends Fragment {
                         public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
 
                             if (response.isSuccessful()) {
-                                customProgressDialog.hide();
                                 CommonResponseModel apiResponse = response.body();
                                 if (apiResponse != null && apiResponse.isSuccess()) {
                                     String[] parts = apiResponse.getMessage().split("_");
-                                    int initial_amount = Integer.parseInt(parts[0]);
-                                    int walet_amount = Integer.parseInt(parts[1]);
-                                    int amount = initial_amount - walet_amount;
+                                    double initial_amount = Double.parseDouble(parts[0]);
+                                    double walet_amount = Double.parseDouble(parts[1]);
+                                    double amount = initial_amount - walet_amount;
                                     if (appDataUtil.getIntData("INIT_AMOUNT") == 0) {
-                                        appDataUtil.setIntData(initial_amount, "INIT_AMOUNT");
+                                        appDataUtil.setIntData((int) initial_amount, "INIT_AMOUNT");
                                     }
-//                                        appDataUtil.setIntData(appDataUtil.getIntData("ROUND_TOTAL")+amount,"ROUND_TOTAL");
-                                    appDataUtil.setIntData(walet_amount, "user_amount");
+                                    String tid=generateRandomString(8);
+
+                                    appDataUtil.setIntData((int)walet_amount, "user_amount");
                                     winAvlBlnc.setText("Available Balance: ₹" + walet_amount);
-                                    Toast.makeText(getContext(), "Amount Added=" + amount, Toast.LENGTH_LONG).show();
+
+                                    runBeforePayment(String.valueOf(amount),colorName,"REMOVE","Game","success",tid);
                                     updateGlobalValues(colorName, colorValue);
                                     // Handle success message
+                                }else{
+
                                 }
-                            }else{
-                                customProgressDialog.hide();
                             }
+                            Log.e("TAG", " my res radd color vaue: "+response );
+                            customProgressDialog.hide();
 
                         }
 
 
                         @Override
                         public void onFailure(Call<CommonResponseModel> call, Throwable t) {
-                            customProgressDialog.hide();
+                            Log.e("TAG", " my res failure color vaue: "+t.getMessage() );
 
+                            customProgressDialog.hide();
                         }
                     });
 
@@ -811,6 +892,83 @@ public class Win extends Fragment {
 
 
     }
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    public static String generateRandomString(int length) {
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+        }
+        return sb.toString();
+    }
+    private void runBeforePayment(String amount, String name,String type,String method,String status,String tid){
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                AppDataUtil appDataUtil =AppDataUtil.getInstance(requireActivity().getApplicationContext());
+
+                String token = appDataUtil.getStringData("token").trim();
+                String uid = appDataUtil.getStringData("user_uid").trim();
+                String decodedToken = appDataUtil.decodeString(token);
+
+                PUpdateRequestModel pUpdateRequestModel=new PUpdateRequestModel(tid);
+                ApiService apiService=RetrofitClientWithToken.getApiService(decodedToken);
+                Call<CommonResponseModel> call= apiService.updatePUser(decodedToken,uid,pUpdateRequestModel);
+                call.enqueue(new Callback<CommonResponseModel>() {
+                    @Override
+                    public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                        Executor executor = Executors.newSingleThreadExecutor();
+                        executor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                AppDataUtil appDataUtil =AppDataUtil.getInstance(requireActivity().getApplicationContext());
+
+                                String token = appDataUtil.getStringData("token").trim();
+                                String uid = appDataUtil.getStringData("user_uid").trim();
+                                String decodedToken = appDataUtil.decodeString(token);
+
+                                AddPayRequestModel model=new AddPayRequestModel(uid,name,type,amount,method,tid,status);
+
+                                ApiService apiService = RetrofitClientWithToken.getApiService(decodedToken);
+
+                                Call<CommonResponseModel> call2 = apiService.createPayment("Bearer " + decodedToken, model);
+                                call2.enqueue(new Callback<CommonResponseModel>() {
+                                    @Override
+                                    public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                                        if(response.isSuccessful() && response.body()!=null){
+                                            String[] resArr=response.body().getMessage().split("@");
+
+                                            appDataUtil.setIntData(Integer.parseInt(resArr[0]) ,"user_amount");
+
+                                            Toast.makeText(getContext(), "Amount Added=" + amount, Toast.LENGTH_LONG).show();
+
+                                        }else{
+                                            Toast.makeText(getContext(), "Failed to add payment contact support", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                                        Toast.makeText(getContext(), "Failed to add contact support", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                        Toast.makeText(getContext(), ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
 
     private void updateGlobalValues(String colorName, int colorValue) {
 
@@ -910,9 +1068,14 @@ public class Win extends Fragment {
             @Override
             public void onResponse(Call<UserRecordResponseModel> call, Response<UserRecordResponseModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<UserRecordModel> model = response.body().getData();
-                    recordAdapter = new RecordWinAdapter(model, getContext());
+                    userRecord = response.body().getData();
+                    if (userRecord != null && !userRecord.isEmpty()) {
+                        paginationTextResultR="0-8 of "+userRecord.size();
+                        resultPageTvR.setText(paginationTextResultR);
+                        Collections.reverse(userRecord);
+                    recordAdapter = new RecordWinAdapter(userRecord, getContext());
                     recordRecycler.setAdapter(recordAdapter);
+                    }
                 }
                 Log.e("TAG", "get result=: " + response);
             }
@@ -944,7 +1107,7 @@ public class Win extends Fragment {
                             List<UserRecordModel> userRecordModels = response.body().getData();
                             recordAdapter = new RecordWinAdapter(userRecordModels, getContext());
                             recordRecycler.setAdapter(recordAdapter);
-
+                            //add payment
                             appDataUtil.setIntData(Integer.parseInt(response.body().getMessage()), "user_amount");
                             winAvlBlnc.setText("Available Balance: ₹" + response.body().getMessage());
                             resetGlobalValues();

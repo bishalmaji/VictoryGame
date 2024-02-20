@@ -13,8 +13,11 @@ import com.victory.game.models.OtpMailRequestModel;
 import com.victory.game.models.OtpRequestModel;
 import com.victory.game.models.CommonResponseModel;
 import com.victory.game.models.PUpdateRequestModel;
+import com.victory.game.models.ReferalResponseModel;
+import com.victory.game.models.ReferralCommonModel;
 import com.victory.game.models.RegisterMailRequestModel;
 import com.victory.game.models.RegisterRequestModel;
+import com.victory.game.models.UserPaymentResponseModel;
 import com.victory.game.models.UserRecordResponseModel;
 
 import okhttp3.ResponseBody;
@@ -31,21 +34,25 @@ public interface ApiService {
     Call<CommonResponseModel> sendOtp(@Body OtpRequestModel request);
     @POST("/api/otp/sendmail") // Endpoint for sending OTP
     Call<CommonResponseModel> sendMailOtp(@Body OtpMailRequestModel request);
+
+//    @Headers({"Accept: application/json"})
     @POST("/api/users/register") // Endpoint for sending OTP
     Call<CommonResponseModel> register(@Body RegisterRequestModel request);
 
+
+    //    @Headers({"Accept: application/json"})
     @POST("/api/users/registerMail") // Endpoint for sending OTP
     Call<CommonResponseModel> registerMail(@Body RegisterMailRequestModel request);
 
-    @Headers({"Accept: application/json"})
+//    @Headers({"Accept: application/json"})
     @POST("/api/users/login")
     Call<ResponseBody> login(@Body LoginRequestModel request);
 
-    @Headers({"Accept: application/json"})
+//    @Headers({"Accept: application/json"})
     @POST("/api/users/loginMail")
     Call<ResponseBody> loginMail(@Body LoginMailRequestModel request);
 
-    @POST("/api/game/update-color/user/{userId}")
+        @POST("/api/game/update-color/user/{userId}")
     Call<CommonResponseModel> updateColor(
             @Header("Authorization") String token,
             @Path("userId") String userId,
@@ -86,6 +93,13 @@ public interface ApiService {
 
     @GET("/api/users/record/get/{userId}")
     Call<UserRecordResponseModel> getRecordsByUser(@Header("Authorization") String token,@Path("userId") String userId);
+
+    @GET("/api/users/refer/get/{userId}")
+    Call<ReferralCommonModel> getReferOfUser(@Header("Authorization") String token, @Path("userId") String userId);
+
+    @GET("/api/payments/payment/user/{userId}")
+    Call<UserPaymentResponseModel> getPaymentsByUser(@Header("Authorization") String token, @Path("userId") String userId);
+
 
 
 }

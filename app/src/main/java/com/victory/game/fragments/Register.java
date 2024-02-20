@@ -379,9 +379,8 @@ public class Register extends Fragment {
                                 //save sp
                                 if (appDataUtil.setStringData(encodedToken,"token")){
                                     postRegister();
-
                                 }
-//
+
 
                             }
                             Log.d("TAG", "onResponse: Auth head" + authorizationHeader);

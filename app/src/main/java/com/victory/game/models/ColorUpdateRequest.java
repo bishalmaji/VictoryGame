@@ -1,7 +1,11 @@
 package com.victory.game.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ColorUpdateRequest {
+    @SerializedName("colorName")
     private String colorName; // Represents the name of the color being updated (e.g., "red", "green", "pink")
+    @SerializedName("value")
     private int value; // Represents the value to update for the specified color
 
     public ColorUpdateRequest(String colorName, int value) {

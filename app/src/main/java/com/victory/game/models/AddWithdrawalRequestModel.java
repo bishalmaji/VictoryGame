@@ -8,6 +8,7 @@ public class AddWithdrawalRequestModel {
     private String upiId;
     private String name;
 
+
     public AddWithdrawalRequestModel(String userId, String amount, String bankAccountNo, String ifsc, String upiId, String name) {
         this.userId = userId;
         this.amount = amount;
@@ -66,4 +67,6 @@ public class AddWithdrawalRequestModel {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }

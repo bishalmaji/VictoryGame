@@ -208,9 +208,10 @@ public class Login extends Fragment {
 
 
                             }
+                            progressDialog.hide();
                             Log.d("TAG", "onResponse: Auth head"+authorizationHeader);
                         } else {
-
+                            progressDialog.hide();
                             Toast.makeText(getContext(), "Authorization missing in response", Toast.LENGTH_LONG).show();
                             // Handle the case where the "Authorization" header is missing
                             Log.d("TAG", "");
